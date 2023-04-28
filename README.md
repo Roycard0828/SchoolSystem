@@ -1,4 +1,4 @@
-#School System
+# School System
 
 This is a practice project development with Java 11 and SpringBoot 2.7.11. The purpose of this project is practice the backend and software design skills.
 
