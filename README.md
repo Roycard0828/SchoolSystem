@@ -25,3 +25,9 @@ System to manage a school with class rooms, students, teachers, subjects and qua
 3. The administrator creates teachers, students, subjects and asign them to a classroom.
 4. The teacher asign grades per subject to all the students.
 5. The students can check their grades history with all the taken subjects.
+
+# Branches to implement.
+
+## Login
+
+Works with all the login logic for the three entities: Manager, Teacher and Student.
