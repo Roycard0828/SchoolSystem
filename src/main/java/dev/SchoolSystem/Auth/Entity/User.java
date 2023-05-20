@@ -1,13 +1,12 @@
 package dev.SchoolSystem.Auth.Entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "manager")
+@Table(name = "users")
 public class User {
 
     @Id
@@ -24,7 +23,14 @@ public class User {
     @NotNull
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_option", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "option_id"))
+    private Set<Option> options = new HashSet<>();
 
     public User(){}
 
@@ -34,6 +40,16 @@ public class User {
         this.last_name = last_name;
         this.username = username;
         this.password = password;
+    }
+
+    public User(String name, String last_name, String username,
+                String password, Set<Role> roles, Set<Option> options) {
+        this.name = name;
+        this.last_name = last_name;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.options = options;
     }
 
     public User(String name, String last_name, String username, String password) {
@@ -83,12 +99,20 @@ public class User {
         this.password = password;
     }
 
-    public Collection<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<Option> getOptions() {
+        return options;
+    }
+
+    public void setOptions(Set<Option> options) {
+        this.options = options;
     }
 
     @Override

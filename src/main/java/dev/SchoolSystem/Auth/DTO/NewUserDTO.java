@@ -14,8 +14,13 @@ public class NewUserDTO {
     private String last_name;
     @NotBlank
     private String username;
-    @NotBlank
     private String password;
+
+    public NewUserDTO(String name, String last_name, String username){
+        this.name = name;
+        this.last_name = last_name;
+        this.username = username;
+    }
 
     public String getName() {
         return name;
