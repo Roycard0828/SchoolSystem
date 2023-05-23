@@ -31,3 +31,9 @@ System to manage a school with class rooms, students, teachers, subjects and qua
 ## Login
 
 Works with all the login logic for the three entities: Manager, Teacher and Student.
+
+## Subject
+
+Functionality to manage the subjects available in the school. Each subject can be
+added to a classroom and can be taken by students and teachers.
+
