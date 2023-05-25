@@ -9,10 +9,15 @@ import dev.SchoolSystem.Auth.Repository.RoleRepository;
 import dev.SchoolSystem.Auth.Service.OptionService;
 import dev.SchoolSystem.Auth.Service.RoleService;
 import dev.SchoolSystem.Auth.Service.UserService;
+import dev.SchoolSystem.Subejct.DTO.SubjectDTO;
+import dev.SchoolSystem.Subejct.Service.SubjectService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,6 +32,14 @@ public class SchoolSystemApplication {
 	PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
+
+	//@Bean
+	//UserDetailsService userDetailsService(){return new UserDetailsService() {
+	//	@Override
+	//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	//		return null;
+	//	}
+	//};};
 
 	@Bean
 	public CommandLineRunner commandLineRunner(){
