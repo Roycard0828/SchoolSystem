@@ -37,3 +37,11 @@ Works with all the login logic for the three entities: Manager, Teacher and Stud
 Functionality to manage the subjects available in the school. Each subject can be
 added to a classroom and can be taken by students and teachers.
 
+## Teacher
+
+Functionality to manage the teachers. This branch implement all the functionalities which a teacher can perform such as
+- Teaches subject in a classroom.
+- Planning exams.
+- Planning tasks.
+- Assign notes to students.
+
