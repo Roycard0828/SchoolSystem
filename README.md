@@ -37,11 +37,35 @@ Works with all the login logic for the three entities: Manager, Teacher and Stud
 Functionality to manage the subjects available in the school. Each subject can be
 added to a classroom and can be taken by students and teachers.
 
-## Teacher.
-Teacher module to perform all the teacher activities
+## Classroom.
+Classroom branch to implement all the individual modules which work in a classroom, such as
+**Class**, **Teacher**, **Student**, **Exam** and **Activity**.
+Each entity perform its own activities.
+### Teacher.
 - Assign notes per subject.
 - Assign tasks to students.
 - Assign exams to students.
+### Student.
+- Submit activities.
+- Respond exams.
+- Check his notes per subject.
+- Check his main notes of the grade.
+### Class
+- Has one teacher.
+- Has two or more students.
+- Has a subject.
+### Exam.
+Only works with the note of the exam, not the content itself.
+- Has a subject specified.
+- Has a teacher and a student.
+- Has a note.
+### Activity.
+Only works with the note of the activity, not the content itself.
+- Has a subject specified.
+- Has a teacher and a student.
+- Has a note.
+- Has comments by the teacher.
+
 
 
 
