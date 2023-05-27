@@ -37,18 +37,11 @@ Works with all the login logic for the three entities: Manager, Teacher and Stud
 Functionality to manage the subjects available in the school. Each subject can be
 added to a classroom and can be taken by students and teachers.
 
-## ClassRoom
-
-Logic of the whole classroom where its entities are ClassRoom, Teacher and Student.
-The manager of the school can create classrooms and assign them one teacher, one subject
-and more than 2 students. Also this module will contain all the individual functionalities
-for each entity.
-### Teacher.
+## Teacher.
+Teacher module to perform all the teacher activities
 - Assign notes per subject.
 - Assign tasks to students.
 - Assign exams to students.
-### Student.
-- Deliver tasks.
-- Responds exams.
+
 
 
