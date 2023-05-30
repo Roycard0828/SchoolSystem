@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name = "class")
+@Table(name = "classroom")
 @Getter @Setter
 @AllArgsConstructor
 public class Classroom {
@@ -21,31 +21,23 @@ public class Classroom {
     private Long id;
     @Column(name = "number")
     private int number;
+
     @OneToOne(targetEntity = Subject.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "subject_id")
     private Subject subject;
+
     @OneToOne(targetEntity = Teacher.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "teacher_id")
     private Teacher teacher;
-    @OneToOne(targetEntity = Student.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "student_id")
-    private Set<Student> students;
 
-    public Classroom(int number, Subject subject, Teacher teacher, Set<Student> students) {
+    @OneToOne(mappedBy = "classroom", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Record record;
+
+    public Classroom(int number, Subject subject, Teacher teacher, Record record) {
         this.number = number;
         this.subject = subject;
         this.teacher = teacher;
-        this.students = students;
-    }
-
-    @Override
-    public String toString() {
-        return "Class{" +
-                "id=" + id +
-                ", number=" + number +
-                ", subject=" + subject +
-                ", teacher=" + teacher +
-                ", students=" + students +
-                '}';
+        this.record = record;
     }
 }

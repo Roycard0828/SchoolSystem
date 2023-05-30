@@ -24,7 +24,7 @@ public class ClassroomService {
                 classroomDTO.getNumber(),
                 classroomDTO.getSubject(),
                 classroomDTO.getTeacher(),
-                classroomDTO.getStudents()
+                classroomDTO.getRecord()
         );
         classroomRepository.save(classroom);
         return classroom;

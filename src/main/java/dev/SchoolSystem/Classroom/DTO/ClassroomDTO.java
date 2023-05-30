@@ -1,5 +1,6 @@
 package dev.SchoolSystem.Classroom.DTO;
 
+import dev.SchoolSystem.Classroom.Entity.Record;
 import dev.SchoolSystem.Student.Entity.Student;
 import dev.SchoolSystem.Subejct.Entity.Subject;
 import dev.SchoolSystem.Teacher.Entity.Teacher;
@@ -20,6 +21,6 @@ public class ClassroomDTO {
     @NotNull
     private Teacher teacher;
     @NotNull
-    private Set<Student> students;
+    private Record record;
 
 }
