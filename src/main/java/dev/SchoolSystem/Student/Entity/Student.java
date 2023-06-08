@@ -15,7 +15,9 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long identifier;
+    private Long id;
+    @Column(name = "identifier")
+    private String identifier;
     @Column(name = "age")
     private int age;
     @Column(name = "course")
@@ -33,10 +35,18 @@ public class Student {
         this.user_id = user_id;
     }
 
+    public Student(String identifier, int age, String course, String email, User user_id) {
+        this.identifier = identifier;
+        this.age = age;
+        this.course = course;
+        this.email = email;
+        this.user_id = user_id;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
-                "identifier=" + identifier +
+                "identifier=" + id +
                 ", age=" + age +
                 ", course='" + course + '\'' +
                 ", email='" + email + '\'' +

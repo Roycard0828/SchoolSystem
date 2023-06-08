@@ -33,14 +33,6 @@ public class SchoolSystemApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	//@Bean
-	//UserDetailsService userDetailsService(){return new UserDetailsService() {
-	//	@Override
-	//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-	//		return null;
-	//	}
-	//};};
-
 	@Bean
 	public CommandLineRunner commandLineRunner(){
 		return args -> {

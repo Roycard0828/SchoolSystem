@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -40,5 +41,12 @@ public class Record {
     public Record(Classroom classroom, Set<Student> students) {
         this.classroom = classroom;
         this.students = students;
+    }
+
+    public Record(Classroom classroom, Set<Student> students, Set<Activity> activities, Set<Exam> exams) {
+        this.classroom = classroom;
+        this.students = students;
+        this.activities = activities;
+        this.exams = exams;
     }
 }

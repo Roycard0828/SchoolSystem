@@ -1,6 +1,7 @@
 package dev.SchoolSystem.Classroom.Service;
 
-import dev.SchoolSystem.Classroom.DTO.ClassroomDTO;
+import dev.SchoolSystem.Classroom.DTO.NewClassRoomDTO;
+import dev.SchoolSystem.Classroom.DTO.NewRecordDTO;
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Repository.ClassroomRepository;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -18,22 +20,24 @@ public class ClassroomService {
 
     @Autowired
     private final ClassroomRepository classroomRepository;
+    @Autowired
+    private final RecordService recordService;
 
-    public Classroom createClass(ClassroomDTO classroomDTO){
+    public Classroom createClass(NewClassRoomDTO newClassRoomDTO){
         Classroom classroom = new Classroom(
-                classroomDTO.getNumber(),
-                classroomDTO.getSubject(),
-                classroomDTO.getTeacher(),
-                classroomDTO.getRecord()
+                newClassRoomDTO.getClassCode(),
+                newClassRoomDTO.getSubject(),
+                newClassRoomDTO.getTeacher()
         );
         classroomRepository.save(classroom);
+        //Automatically create a record for this classroom
+        recordService.createRecord(new NewRecordDTO(classroom));
         return classroom;
     }
 
-    public Classroom getClassroomByNumber(int number){
-        return classroomRepository.findByNumber(number);
+    public Optional<Classroom> getClassroomByNumber(String classCode){
+        return classroomRepository.findByClassCode(classCode);
     }
 
     //Classroom functionality
-
 }

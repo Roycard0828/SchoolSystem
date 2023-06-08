@@ -37,7 +37,7 @@ public class StudentService {
         return studentRepository.getStudentsByCourse(course);
     }
 
-    public Student findStudentByIdentifier(Long identifier){
+    public Student findStudentByIdentifier(String identifier){
         return studentRepository.findByIdentifier(identifier);
     }
 

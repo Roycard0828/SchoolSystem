@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
-    Student findByIdentifier(Long identifier);
+    Student findByIdentifier(String identifier);
     @Query("SELECT s FROM Student s WHERE s.course = ?1")
     List<Student> getStudentsByCourse(String course);
 }

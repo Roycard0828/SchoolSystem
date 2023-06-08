@@ -20,14 +20,15 @@ public class Activity {
     @Column(name = "description")
     private String description;
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
-    private Set<ActivityDelivery> deliveries;
+    private Set<ActDelivery> deliveries;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "record_id", nullable = false)
     private Record record;
 
-    public Activity(String description, Set<ActivityDelivery> deliveries) {
+    public Activity(String description, Set<ActDelivery> deliveries, Record record) {
         this.description = description;
         this.deliveries = deliveries;
+        this.record = record;
     }
 }

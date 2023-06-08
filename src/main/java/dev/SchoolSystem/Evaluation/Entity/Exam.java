@@ -28,9 +28,10 @@ public class Exam {
     @JoinColumn(name = "record_id", nullable = false)
     private Record record;
 
-    public Exam(String description, String content, Set<ExamAnswer> answers) {
+    public Exam(String description, String content, Set<ExamAnswer> answers, Record record) {
         this.description = description;
         this.content = content;
         this.answers = answers;
+        this.record = record;
     }
 }

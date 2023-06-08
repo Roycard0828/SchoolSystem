@@ -18,7 +18,7 @@ import java.util.List;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class SubjectService implements UserDetailsService {
+public class SubjectService{
 
     private final SubjectRepository subjectRepository;
 
@@ -42,10 +42,5 @@ public class SubjectService implements UserDetailsService {
 
     public List<Subject> getAllSubjects(){
         return subjectRepository.findAll();
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
     }
 }

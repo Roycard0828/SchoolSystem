@@ -30,9 +30,8 @@ public class ExamAnswer {
     @JoinColumn(nullable = false, name = "student_id")
     private Student student;
 
-    public ExamAnswer(String content, double note, Student student) {
-        this.content = content;
-        this.note = note;
+    public ExamAnswer(Exam exam, Student student) {
+        this.exam = exam;
         this.student = student;
     }
 }

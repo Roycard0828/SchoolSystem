@@ -6,22 +6,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "activity_delivery")
 @Setter @Getter
 @AllArgsConstructor
-public class ActivityDelivery {
+public class ActDelivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "content")
     private String content;
-    @Column(name = "student")
+    @Column(name = "comments")
     private String comments;
     @Column(name = "note")
     private double note;
+    @Column(name = "delivery_date")
+    private Date deliveryDate;
 
     @ManyToOne
     @JoinColumn(name = "activity_id", nullable = false)
@@ -31,11 +34,9 @@ public class ActivityDelivery {
     @JoinColumn(nullable = false, name = "student_id")
     private Student student;
 
-    public ActivityDelivery(Student student, String content, String comments, double note) {
+    public ActDelivery(Student student, Activity activity) {
         this.student = student;
-        this.content = content;
-        this.comments = comments;
-        this.note = note;
+        this.activity = activity;
     }
 
 
