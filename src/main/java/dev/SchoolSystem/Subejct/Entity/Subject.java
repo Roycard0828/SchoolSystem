@@ -10,13 +10,17 @@ public class Subject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "identifier", unique = true)
-    private int identifier;
+    private String identifier;
     @Column(name = "name")
     private String name;
     @Column(name = "credits")
     private int credits;
 
-    public Subject(int identifier, String name, int credits) {
+    public Subject(){
+
+    }
+
+    public Subject(String identifier, String name, int credits) {
         this.identifier = identifier;
         this.name = name;
         this.credits = credits;
@@ -30,11 +34,11 @@ public class Subject {
         this.id = id;
     }
 
-    public int getIdentifier() {
+    public String getIdentifier() {
         return identifier;
     }
 
-    public void setIdentifier(int identifier) {
+    public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
 

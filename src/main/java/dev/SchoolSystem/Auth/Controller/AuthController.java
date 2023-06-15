@@ -47,10 +47,10 @@ public class AuthController {
     }
 
     @PostMapping("/user/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody NewUserDTO newUser){
+    public ResponseEntity<User> registerUser(@Valid @RequestBody NewUserDTO newUser){
         User user = userService.registerUser(newUser);
 
-        return new ResponseEntity<>("User created", HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{username}")

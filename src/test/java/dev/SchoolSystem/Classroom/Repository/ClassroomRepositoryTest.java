@@ -31,7 +31,7 @@ class ClassroomRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        subject = new Subject(1, "Subject", 0);
+        subject = new Subject("identifier", "Subject", 0);
         subjectRepository.save(subject);
         classroom = new Classroom("CL-200", subject, null);
     }

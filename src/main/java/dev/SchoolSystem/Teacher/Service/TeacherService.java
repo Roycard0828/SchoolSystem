@@ -3,6 +3,7 @@ package dev.SchoolSystem.Teacher.Service;
 import dev.SchoolSystem.Teacher.DTO.TeacherDTO;
 import dev.SchoolSystem.Teacher.Entity.Teacher;
 import dev.SchoolSystem.Teacher.Repository.TeacherRepository;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class TeacherService {
     //CRUD operations
     public Teacher createTeacher(TeacherDTO teacherDTO){
 
-        Teacher teacher = new Teacher(
+        Teacher teacher = new Teacher(teacherDTO.getIdentifier(),
             teacherDTO.getAge(),
             teacherDTO.getProfessional_title(),
             teacherDTO.getEmail(),
@@ -33,8 +34,12 @@ public class TeacherService {
         return teacher;
     }
 
-    public Teacher findTeacherByIdentifier(Long identifier){
-        return teacherRepository.findByIdentifier(identifier);
+    public Teacher findTeacherByIdentifier(String identifier){
+        Teacher teacher = teacherRepository.findByIdentifier(identifier);
+        if(teacher == null){
+            throw  new ResourceNotFoundException(getClass().getSimpleName(), "Teacher not found");
+        }
+        return teacher;
     }
 
     public List<Teacher> getAllTeachers(){

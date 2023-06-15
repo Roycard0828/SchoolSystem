@@ -7,12 +7,14 @@ import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Student.Entity.Student;
 import dev.SchoolSystem.Student.Repository.StudentRepository;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -36,18 +38,18 @@ public class RecordService {
         return recordRepository.save(record);
     }
 
-    public Optional<Record> findRecordByClassCode(String classCode) throws Exception {
+    public Record findRecordByClassCode(String classCode){
         Optional<Record> record = recordRepository.findRecordByClassCode(classCode);
         if(record.isEmpty()){
             log.error("Record not found");
-            throw new Exception("Record not found");
+            throw new ResourceNotFoundException(getClass().getName(), "Record not found");
         }
-        return record;
+        return record.get();
     }
 
     public Set<Activity> getAllActivitiesByRecordClassCode(String classCode){
         Optional<Record> record = recordRepository.findRecordByClassCode(classCode);
-        Set<Activity> listActivities = null;
+        Set<Activity> listActivities = new HashSet<>();
         if (record.isPresent()){
             listActivities = record.get().getActivities();
         }
@@ -63,13 +65,13 @@ public class RecordService {
         return listExams;
     }
 
-    public void addStudentToRecord(String studentIdentifier, String classCode) throws Exception {
+    public void addStudentToRecord(String studentIdentifier, String classCode){
         Student student = studentRepository.findByIdentifier(studentIdentifier);
         Optional<Record> record = recordRepository.findRecordByClassCode(classCode);
         if(student != null){
             if(record.isEmpty()){
                 log.error("Record not found");
-                throw new Exception("Record not found");
+                throw new ResourceNotFoundException(getClass().getName(), "Record not found");
             }
             //Add student
             record.get().getStudents().add(student);
@@ -77,7 +79,7 @@ public class RecordService {
             recordRepository.save(record.get());
         }else{
             log.error("Student does not exist");
-            throw new Exception("Student does not exist");
+            throw new ResourceNotFoundException(getClass().getName(), "Student not found");
         }
     }
 }

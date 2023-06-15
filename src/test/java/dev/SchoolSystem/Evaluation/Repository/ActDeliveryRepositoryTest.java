@@ -52,7 +52,7 @@ class ActDeliveryRepositoryTest {
     @BeforeEach
     void setUp() {
         //All the object necessary to save an ActDelivery
-        subject = new Subject(1, "", 0);
+        subject = new Subject("identifier", "", 0);
         subjectRepository.save(subject);
 
         classroom = new Classroom("CL-200", subject, null);
@@ -68,7 +68,7 @@ class ActDeliveryRepositoryTest {
         user = new User("", "", "", "");
         userRepository.save(user);
 
-        student = new Student(10, "", "", user);
+        student = new Student("STU-1234",10, "", "", user);
         studentRepository.save(student);
 
         actDelivery = new ActDelivery(student, activity);

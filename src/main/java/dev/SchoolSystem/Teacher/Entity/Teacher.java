@@ -15,7 +15,9 @@ public class Teacher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long identifier;
+    private Long id;
+    @Column(name = "identifier")
+    private String identifier;
     @Column(name = "age")
     private int age;
     @Column(name = "professional_title")
@@ -26,7 +28,12 @@ public class Teacher {
     @JoinColumn(nullable = false, name = "user_id")
     private User user_id;
 
-    public Teacher(int age, String professional_title, String email, User user_id) {
+    public Teacher(){
+
+    }
+
+    public Teacher(String identifier, int age, String professional_title, String email, User user_id) {
+        this.identifier = identifier;
         this.age = age;
         this.professional_title = professional_title;
         this.email = email;
@@ -36,7 +43,7 @@ public class Teacher {
     @Override
     public String toString() {
         return "Teacher{" +
-                "identifier=" + identifier +
+                "id=" + id +
                 ", age=" + age +
                 ", professional_title='" + professional_title + '\'' +
                 ", email='" + email + '\'' +

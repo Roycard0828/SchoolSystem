@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class StudentDTO {
 
+    @NotBlank
+    private String identifier;
     @NotNull
     private int age;
     @NotBlank

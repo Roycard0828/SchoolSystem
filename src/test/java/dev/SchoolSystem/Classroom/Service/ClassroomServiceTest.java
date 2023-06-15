@@ -1,11 +1,12 @@
 package dev.SchoolSystem.Classroom.Service;
 
-import dev.SchoolSystem.Auth.Entity.User;
-import dev.SchoolSystem.Classroom.DTO.NewClassRoomDTO;
+import dev.SchoolSystem.Classroom.DTO.ClassRoomDTO;
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Repository.ClassroomRepository;
 import dev.SchoolSystem.Subejct.Entity.Subject;
+import dev.SchoolSystem.Subejct.Service.SubjectService;
 import dev.SchoolSystem.Teacher.Entity.Teacher;
+import dev.SchoolSystem.Teacher.Service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Optional;
 
@@ -28,6 +28,10 @@ class ClassroomServiceTest {
     private ClassroomRepository classroomRepository;
     @Mock
     private RecordService recordService;
+    @Mock
+    private SubjectService subjectService;
+    @Mock
+    private TeacherService teacherService;
     @InjectMocks
     private ClassroomService underTest;
 
@@ -36,13 +40,17 @@ class ClassroomServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new ClassroomService(classroomRepository, recordService);
+        underTest = new ClassroomService(
+                classroomRepository,
+                recordService,
+                subjectService,
+                teacherService);
     }
 
     @Test
     void testCreateClassRoom(){
         //given
-        NewClassRoomDTO classRoomDTO = new NewClassRoomDTO("cl-200", subject, teacher);
+        ClassRoomDTO classRoomDTO = new ClassRoomDTO("cl-200", "", "");
         //when
         underTest.createClass(classRoomDTO);
         ArgumentCaptor<Classroom> classroomArgumentCaptor =
@@ -60,9 +68,9 @@ class ClassroomServiceTest {
         given(classroomRepository.findByClassCode(classCode)).
                 willReturn(Optional.of(new Classroom("", subject, teacher)));
         //when
-        Optional<Classroom> searchedClassroom = underTest.getClassroomByNumber(classCode);
+        Classroom searchedClassroom = underTest.getClassroomByClassCode(classCode);
         //then
-        assertTrue(searchedClassroom.isPresent());
+        assertInstanceOf(Classroom.class, searchedClassroom);
     }
 
 }

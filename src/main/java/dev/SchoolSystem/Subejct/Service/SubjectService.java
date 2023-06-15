@@ -3,6 +3,7 @@ package dev.SchoolSystem.Subejct.Service;
 import dev.SchoolSystem.Subejct.DTO.SubjectDTO;
 import dev.SchoolSystem.Subejct.Entity.Subject;
 import dev.SchoolSystem.Subejct.Repository.SubjectRepository;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +34,19 @@ public class SubjectService{
     }
 
     public Subject findByName(String name){
-        return subjectRepository.findByName(name);
+        Subject subject = subjectRepository.findByName(name);
+        if (subject == null){
+            throw new ResourceNotFoundException("Subject not found");
+        }
+        return subject;
     }
 
-    public Subject findByIdentifier(int identifier){
-        return subjectRepository.findByIdentifier(identifier);
+    public Subject findByIdentifier(String identifier){
+        Subject subject = subjectRepository.findByIdentifier(identifier);
+        if (subject == null){
+            throw new ResourceNotFoundException("Subject not found");
+        }
+        return subject;
     }
 
     public List<Subject> getAllSubjects(){

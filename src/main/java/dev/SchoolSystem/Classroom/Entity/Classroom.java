@@ -1,5 +1,6 @@
 package dev.SchoolSystem.Classroom.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.SchoolSystem.Subejct.Entity.Subject;
 import dev.SchoolSystem.Teacher.Entity.Teacher;
 import lombok.AllArgsConstructor;
@@ -39,4 +40,9 @@ public class Classroom {
     }
 
     public Classroom(){}
+
+    @JsonManagedReference
+    public Record getRecord(){
+        return record;
+    }
 }

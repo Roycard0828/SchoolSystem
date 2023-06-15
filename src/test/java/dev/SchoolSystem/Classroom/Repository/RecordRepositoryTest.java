@@ -32,7 +32,7 @@ class RecordRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        subject = new Subject(1, "", 1);
+        subject = new Subject("identifier", "", 1);
         subjectRepository.save(subject);
         classroom = new Classroom("CL-200", subject, null);
         classroomRepository.save(classroom);

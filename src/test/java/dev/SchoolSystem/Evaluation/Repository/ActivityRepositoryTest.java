@@ -40,7 +40,7 @@ class ActivityRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        subject = new Subject(1, "", 0);
+        subject = new Subject("identifier", "", 0);
         subjectRepository.save(subject);
 
         classroom = new Classroom("CL-200", subject, null);

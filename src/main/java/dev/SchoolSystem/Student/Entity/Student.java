@@ -28,19 +28,16 @@ public class Student {
     @JoinColumn(nullable = false, name = "user_id")
     private User user_id;
 
-    public Student(int age, String course, String email, User user_id) {
-        this.age = age;
-        this.course = course;
-        this.email = email;
-        this.user_id = user_id;
-    }
-
     public Student(String identifier, int age, String course, String email, User user_id) {
         this.identifier = identifier;
         this.age = age;
         this.course = course;
         this.email = email;
         this.user_id = user_id;
+    }
+
+    public Student(){
+
     }
 
     @Override

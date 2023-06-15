@@ -1,5 +1,6 @@
 package dev.SchoolSystem.Classroom.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Student.Entity.Student;
@@ -38,6 +39,9 @@ public class Record {
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL)
     private Set<Exam> exams;
 
+    public Record(){
+    }
+
     public Record(Classroom classroom, Set<Student> students) {
         this.classroom = classroom;
         this.students = students;
@@ -48,5 +52,10 @@ public class Record {
         this.students = students;
         this.activities = activities;
         this.exams = exams;
+    }
+
+    @JsonBackReference
+    public Classroom getClassroom(){
+        return this.classroom;
     }
 }

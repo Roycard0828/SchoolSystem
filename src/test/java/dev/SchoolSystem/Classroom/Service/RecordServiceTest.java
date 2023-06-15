@@ -66,10 +66,9 @@ class RecordServiceTest {
         given(recordRepository.findRecordByClassCode(classCode)).
                 willReturn(Optional.of(new Record(classroom, new HashSet<>())));
         //when
-        Optional<Record> record = underTest.findRecordByClassCode(classCode);
+        Record record = underTest.findRecordByClassCode(classCode);
         //then
-        assertTrue(record.isPresent());
-        assertInstanceOf(Record.class, record.get());
+        assertInstanceOf(Record.class, record);
     }
 
     @Test
@@ -120,7 +119,7 @@ class RecordServiceTest {
         String studentIdentifier = "S-123";
         String classCode = "cl-200";
         Record record = new Record(classroom, new HashSet<>());
-        student = new Student(10, "", "",
+        student = new Student("STU-1234",10, "", "",
                 new User());
         //when
         when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(student);
@@ -150,7 +149,7 @@ class RecordServiceTest {
         //given
         String studentIdentifier = "S-123";
         String classCode = "cl-200";
-        student = new Student(10, "", "",
+        student = new Student("STU-1234",10, "", "",
                 new User());
         //when
         when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(student);

@@ -33,27 +33,17 @@ public class SubjectController {
 
     @GetMapping("/get/{name}")
     public ResponseEntity<Subject> getSubjectByName(@PathVariable("name") String name){
-        Subject subject = subjectService.findByName(name);
-        if(subject != null){
-            return new ResponseEntity<>(subject, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(null, BAD_REQUEST);
-        }
+        return new ResponseEntity<>(subjectService.findByName(name), HttpStatus.OK);
     }
 
     @GetMapping("/get-by-identifier/{identifier}")
-    public ResponseEntity<Subject> getSubjectByIdentifier(@PathVariable("identifier") int identifier){
-        Subject subject = subjectService.findByIdentifier(identifier);
-        if(subject != null){
-            return new ResponseEntity<>(subject, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(null, BAD_REQUEST);
-        }
+    public ResponseEntity<Subject> getSubjectByIdentifier(@PathVariable("identifier") String identifier){
+        return new ResponseEntity<>(subjectService.findByIdentifier(identifier), HttpStatus.OK);
     }
 
     @PostMapping("/create")
     public ResponseEntity<Subject> createSubject(@Valid @RequestBody SubjectDTO subjectDTO){
-        Subject subject = new Subject(subjectDTO.getIdentifier(), subjectDTO.getName(), subjectDTO.getCredits());
+        Subject subject = subjectService.saveSubject(subjectDTO);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
     }
 

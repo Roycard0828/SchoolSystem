@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
-    Teacher findByIdentifier(Long identifier);
+    Teacher findByIdentifier(String identifier);
 
 }

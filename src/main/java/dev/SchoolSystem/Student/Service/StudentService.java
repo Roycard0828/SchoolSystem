@@ -24,6 +24,7 @@ public class StudentService {
     public Student createStudent(StudentDTO studentDTO){
 
         Student student = new Student(
+                studentDTO.getIdentifier(),
                 studentDTO.getAge(),
                 studentDTO.getCourse(),
                 studentDTO.getEmail(),
