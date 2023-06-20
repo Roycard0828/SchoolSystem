@@ -1,12 +1,13 @@
 package dev.SchoolSystem.Evaluation.Service;
 
 import dev.SchoolSystem.Classroom.Entity.Record;
-import dev.SchoolSystem.Classroom.Repository.RecordRepository;
+import dev.SchoolSystem.Classroom.Service.RecordService;
 import dev.SchoolSystem.Evaluation.DTO.NewActivityDTO;
 import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActivityRepository;
 import dev.SchoolSystem.Student.Entity.Student;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -25,13 +25,14 @@ public class ActivityService {
     @Autowired
     private final ActivityRepository activityRepository;
     @Autowired
-    private final RecordRepository recordRepository;
+    private final RecordService recordService;
 
     public Activity createActivity(NewActivityDTO activityDTO){
+        Record record = recordService.findRecordByClassCode(activityDTO.getRecord_class_code());
         Activity activity = new Activity(
                 activityDTO.getDescription(),
                 activityDTO.getDeliveries(),
-                activityDTO.getRecord()
+                record
         );
         //Create automatically empty deliverables for all students of a record.
         if(activity.getRecord().getStudents().size() > 0){
@@ -42,17 +43,15 @@ public class ActivityService {
         return activityRepository.save(activity);
     }
 
-    public Set<Activity> findAllActivitiesByRecordClassCode(String classCode) throws Exception {
-        Optional<Record> record = recordRepository.findRecordByClassCode(classCode);
-        if (record.isEmpty()){
-            log.error("Record not found");
-            throw new Exception("Record not found in the database");
+    public Activity findActivityById(Long id){
+        Optional<Activity> activity = activityRepository.findById(id);
+        if(activity.isEmpty()){
+            log.error("Activity not found");
+            throw new ResourceNotFoundException(getClass().getSimpleName(), "Activity not found");
         }
-        return activityRepository.findAllByRecord(record.get());
+        return activity.get();
     }
 
-    public Optional<Activity> findActivityById(Long id){
-        return activityRepository.findById(id);
-    }
+
 
 }

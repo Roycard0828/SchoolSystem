@@ -45,7 +45,6 @@ class RecordControllerTest {
     void setUp() {
         record = new Record();
     }
-
     @Test
     void testGetRecordByClassCode() throws Exception {
         //given

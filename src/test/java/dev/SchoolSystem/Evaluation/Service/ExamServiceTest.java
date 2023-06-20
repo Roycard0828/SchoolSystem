@@ -3,10 +3,11 @@ package dev.SchoolSystem.Evaluation.Service;
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Entity.Record;
 import dev.SchoolSystem.Classroom.Repository.RecordRepository;
+import dev.SchoolSystem.Classroom.Service.RecordService;
 import dev.SchoolSystem.Evaluation.DTO.NewExamDTO;
-import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Evaluation.Repository.ExamRepository;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,8 @@ class ExamServiceTest {
     @Mock
     private ExamRepository examRepository;
     @Mock
+    private RecordService recordService;
+    @Mock
     private RecordRepository recordRepository;
     @InjectMocks
     private ExamService underTest;
@@ -38,7 +41,7 @@ class ExamServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new ExamService(examRepository, recordRepository);
+        underTest = new ExamService(examRepository, recordService);
     }
 
     @Test
@@ -47,7 +50,7 @@ class ExamServiceTest {
         record = new Record(classroom, new HashSet<>());
         NewExamDTO examDTO = new NewExamDTO("", "", "CL-200");
         //when
-        when(recordRepository.findRecordByClassCode(examDTO.getClassCode())).thenReturn(Optional.ofNullable(record));
+        when(recordService.findRecordByClassCode(examDTO.getClass_code())).thenReturn(record);
         underTest.createExam(examDTO);
         ArgumentCaptor<Exam> examArgumentCaptor =
                 ArgumentCaptor.forClass(Exam.class);
@@ -58,25 +61,14 @@ class ExamServiceTest {
     }
 
     @Test
-    void testFindAllExamsByRecordClass() throws Exception {
+    void testFindAllExamsByRecordClass(){
         //given
         record = new Record(classroom, new HashSet<>());
         String classCode = "CL-200";
         //when
-        when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.ofNullable(record));
+        when(recordService.findRecordByClassCode(classCode)).thenReturn(record);
         Set<Exam> exams = underTest.findAllExamsByRecordClassCode(classCode);
         //then
         assertInstanceOf(Set.class, exams);
-    }
-
-    @Test
-    void testFindExamsOfNonExistRecord() {
-        String classCode = "non-exist";
-        //when
-        when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.ofNullable(record));
-        //then
-        Exception exception = assertThrowsExactly(Exception.class,
-                ()-> underTest.findAllExamsByRecordClassCode(classCode));
-        assertEquals("Exam not found in the database", exception.getMessage());
     }
 }

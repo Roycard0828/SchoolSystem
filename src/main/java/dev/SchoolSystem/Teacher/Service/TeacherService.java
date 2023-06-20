@@ -1,5 +1,6 @@
 package dev.SchoolSystem.Teacher.Service;
 
+import dev.SchoolSystem.Auth.Service.RoleService;
 import dev.SchoolSystem.Teacher.DTO.TeacherDTO;
 import dev.SchoolSystem.Teacher.Entity.Teacher;
 import dev.SchoolSystem.Teacher.Repository.TeacherRepository;
@@ -20,6 +21,8 @@ public class TeacherService {
 
     @Autowired
     private TeacherRepository teacherRepository;
+    @Autowired
+    private RoleService roleService;
 
     //CRUD operations
     public Teacher createTeacher(TeacherDTO teacherDTO){
@@ -30,6 +33,10 @@ public class TeacherService {
             teacherDTO.getEmail(),
             teacherDTO.getUser_id()
         );
+
+        //Update the role of the user
+        roleService.addRoleAndOptionsTeacherToUser(teacherDTO.getUser_id().getUsername());
+
         teacherRepository.save(teacher);
         return teacher;
     }

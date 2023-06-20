@@ -10,18 +10,19 @@ import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Getter
-public class ExamAnswerDTO {
+public class DeliverAnswerDTO {
 
     @NotBlank
     private String studentIdentifier;
     @NotNull
     private Long examId;
-    private double note = 0;
+    private String content;
 
     @JsonCreator
-     public ExamAnswerDTO(String studentIdentifier,@JsonProperty("examId") Long examId){
+    public DeliverAnswerDTO(String studentIdentifier, @JsonProperty("examId") Long examId){
         this.studentIdentifier = studentIdentifier;
         this.examId = examId;
     }
+
 
 }

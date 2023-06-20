@@ -41,23 +41,11 @@ public class SchoolSystemApplication {
 	}
 
 	@Bean
-	UserDetailsService userDetailsService(){
-		return new UserDetailsService() {
-			@Override
-			public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-				return null;
-			}
-		};
-	}
-
-	@Bean
-	public CommandLineRunner commandLineRunner(){
+	public CommandLineRunner commandLineRunner(RoleService roleService){
 		return args -> {
 
-			//classroomService.createClass(
-			//		new ClassRoomDTO("CL-300", "ING-2002", "TCH-0002"));
-
-			//classroomService.createClass(new ClassRoomDTO("CL-001", ""));
+			roleService.createRole(new RoleNameDTO(RoleName.ROLE_TEACHER));
+			roleService.addRoleAndOptionsTeacherToUser("aly664");
 
 		};
 	}

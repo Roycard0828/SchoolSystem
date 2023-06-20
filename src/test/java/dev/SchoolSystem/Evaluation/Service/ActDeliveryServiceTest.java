@@ -2,6 +2,7 @@ package dev.SchoolSystem.Evaluation.Service;
 
 import dev.SchoolSystem.Classroom.Entity.Record;
 import dev.SchoolSystem.Evaluation.DTO.ActDeliveryDTO;
+import dev.SchoolSystem.Evaluation.DTO.DeliverDeliveryDTO;
 import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActDeliveryRepository;
@@ -17,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,7 +54,7 @@ class ActDeliveryServiceTest {
         ActDeliveryDTO actDeliveryDTO = new ActDeliveryDTO("S1900", 1L);
         //when
         when(studentService.findStudentByIdentifier("S1900")).thenReturn(student);
-        when(activityService.findActivityById(1L)).thenReturn(Optional.ofNullable(activity));
+        when(activityService.findActivityById(1L)).thenReturn((activity));
         underTest.createActDelivery(actDeliveryDTO);
         ArgumentCaptor<ActDelivery> actDeliveryArgumentCaptor =
                 ArgumentCaptor.forClass(ActDelivery.class);
@@ -71,7 +71,7 @@ class ActDeliveryServiceTest {
         Long id = 1L;
         activity = new Activity("", new HashSet<>(), record);
         //when
-        when(activityService.findActivityById(id)).thenReturn(Optional.ofNullable(activity));
+        when(activityService.findActivityById(id)).thenReturn(activity);
         Set<ActDelivery> deliveries = underTest.findDeliveriesByActivity(id);
         //then
         assertNotNull(deliveries);
@@ -81,35 +81,20 @@ class ActDeliveryServiceTest {
     @Test
     void testAddNoteToDeliveryByTeacher() throws Exception {
         //given
-        double note = 10;
         ActDeliveryDTO deliveryDTO = new ActDeliveryDTO("identifier", 1L);
         activity = new Activity("", new HashSet<>(), record);
         actDelivery = new ActDelivery(student, activity);
         //when
         when(studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier())).thenReturn(student);
-        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(Optional.ofNullable(activity));
+        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(activity);
         when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(actDelivery);
-        underTest.addNoteToDeliveryByTeacher(deliveryDTO, note);
+        underTest.addNoteToDeliveryByTeacher(deliveryDTO);
         //then
         ArgumentCaptor<ActDelivery> deliveryArgumentCaptor =
                 ArgumentCaptor.forClass(ActDelivery.class);
         verify(actDeliveryRepository).save(deliveryArgumentCaptor.capture());
         ActDelivery capturedDelivery = deliveryArgumentCaptor.getValue();
         assertNotNull(capturedDelivery);
-    }
-
-    @Test
-    void testAddNoteToNonExistActivity() {
-        //given
-        double note = 10;
-        ActDeliveryDTO deliveryDTO = new ActDeliveryDTO("identifier", 1L);
-        //when
-        when(studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier())).thenReturn(student);
-        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(Optional.empty());
-        //then
-        Exception ex = assertThrowsExactly(Exception.class,
-                ()-> underTest.addNoteToDeliveryByTeacher(deliveryDTO, note));
-        assertEquals("Activity not found", ex.getMessage());
     }
 
     @Test
@@ -120,7 +105,7 @@ class ActDeliveryServiceTest {
         activity = new Activity("", new HashSet<>(), record);
         actDelivery = new ActDelivery(student, activity);
         //when
-        when(activityService.findActivityById(id)).thenReturn(Optional.ofNullable(activity));
+        when(activityService.findActivityById(id)).thenReturn(activity);
         when(studentService.findStudentByIdentifier(studentIdentifier)).thenReturn(student);
         when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(actDelivery);
         ActDelivery capturedActDelivery = underTest.getActDeliveryByStudent(id, studentIdentifier);
@@ -131,16 +116,17 @@ class ActDeliveryServiceTest {
     @Test
     void testAddContentToDeliveryByStudent() throws Exception {
         //given
-        ActDeliveryDTO deliveryDTO = new ActDeliveryDTO("S1900", 1L);
-        String newContent = "new content";
-        Date deliveryDate = new Date();
+        DeliverDeliveryDTO deliveryDTO = new DeliverDeliveryDTO("S1900",
+                1L,
+                "new content",
+                new Date());
         activity = new Activity("", new HashSet<>(), record);
         actDelivery = new ActDelivery(student, activity);
         //when
         when(studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier())).thenReturn(student);
-        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(Optional.ofNullable(activity));
+        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(activity);
         when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(actDelivery);
-        underTest.addContentToDeliveryByStudent(deliveryDTO, newContent, deliveryDate);
+        underTest.addContentToDeliveryByStudent(deliveryDTO);
         //then
         ArgumentCaptor<ActDelivery> deliveryArgumentCaptor =
                 ArgumentCaptor.forClass(ActDelivery.class);
@@ -149,18 +135,4 @@ class ActDeliveryServiceTest {
         assertNotNull(capturedDelivery);
     }
 
-    @Test
-    void testAddContentToNonExistDelivery() {
-        //given
-        String newContent = "new content";
-        Date deliveryDate = new Date();
-        ActDeliveryDTO deliveryDTO = new ActDeliveryDTO("identifier", 1L);
-        //when
-        when(studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier())).thenReturn(student);
-        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(Optional.empty());
-        //then
-        Exception ex = assertThrowsExactly(Exception.class,
-                ()-> underTest.addContentToDeliveryByStudent(deliveryDTO, newContent, deliveryDate));
-        assertEquals("ActivityDelivery not found", ex.getMessage());
-    }
 }

@@ -57,14 +57,11 @@ class ClassRoomControllerTest {
     @WithMockUser(username = "JOHN", authorities = { "ROLE_MANAGER" })
     void testCreateClassroom() throws Exception {
         //given
-        NewRecordDTO recordDTO = new NewRecordDTO(classroom);
         ClassRoomDTO classRoomDTO = new ClassRoomDTO("CL-200",
                 "GEO-2001", "TECH-0001");
         String jsonStringDTO = objectMapper.writeValueAsString(classRoomDTO);
         //when
-        when(subjectService.findByIdentifier("GEO-2001")).thenReturn(null);
-        when(teacherService.findTeacherByIdentifier("TECH-0001")).thenReturn(null);
-        when(recordService.createRecord(recordDTO)).thenReturn(null);
+        when(classroomService.createClass(classRoomDTO)).thenReturn(classroom);
         //then
         mvc.perform(post("/classroom")
                 .contentType("application/json")

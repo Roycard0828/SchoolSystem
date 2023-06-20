@@ -42,7 +42,7 @@ public class RecordService {
         Optional<Record> record = recordRepository.findRecordByClassCode(classCode);
         if(record.isEmpty()){
             log.error("Record not found");
-            throw new ResourceNotFoundException(getClass().getName(), "Record not found");
+            throw new ResourceNotFoundException(getClass().getSimpleName(), "Record not found");
         }
         return record.get();
     }
@@ -71,7 +71,7 @@ public class RecordService {
         if(student != null){
             if(record.isEmpty()){
                 log.error("Record not found");
-                throw new ResourceNotFoundException(getClass().getName(), "Record not found");
+                throw new ResourceNotFoundException(getClass().getSimpleName(), "Record not found");
             }
             //Add student
             record.get().getStudents().add(student);
@@ -79,7 +79,7 @@ public class RecordService {
             recordRepository.save(record.get());
         }else{
             log.error("Student does not exist");
-            throw new ResourceNotFoundException(getClass().getName(), "Student not found");
+            throw new ResourceNotFoundException(getClass().getSimpleName(), "Student not found");
         }
     }
 }

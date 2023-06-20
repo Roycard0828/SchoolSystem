@@ -4,6 +4,7 @@ import dev.SchoolSystem.Evaluation.Entity.ExamAnswer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,15 +12,20 @@ import java.util.Set;
 @Getter
 public class NewExamDTO {
 
+    @NotBlank
     private String description;
+    @NotBlank
     private String content;
     private Set<ExamAnswer> answers = new HashSet<>();
-    private String classCode;
+    @NotBlank
+    private String class_code;
 
-    public NewExamDTO(String description, String content, String classCode){
+    public NewExamDTO(String description, String content, String class_code){
         this.description = description;
         this.content = content;
-        this.classCode = classCode;
+        this.class_code = class_code;
     }
+
+    public NewExamDTO(){}
 
 }

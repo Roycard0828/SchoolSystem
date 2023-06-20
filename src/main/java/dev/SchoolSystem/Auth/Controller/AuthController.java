@@ -76,7 +76,7 @@ public class AuthController {
 
     @PostMapping("/role/addTeacherRole")
     public ResponseEntity<String> addTeacherRole(@RequestBody String username){
-        User user = roleService.addRoleTeacherToUser(username);
+        User user = roleService.addRoleAndOptionsTeacherToUser(username);
         if(user != null){
             return new ResponseEntity<>("Teacher role added to user", HttpStatus.OK);
         }else{

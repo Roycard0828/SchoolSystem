@@ -23,13 +23,13 @@ public class ClassRoomController {
     private ClassroomService classroomService;
 
     @PostMapping()
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<String> createClassRoom(@Valid @RequestBody ClassRoomDTO classRoomDTO){
         classroomService.createClass(classRoomDTO);
         return new ResponseEntity<>("Classroom created", HttpStatus.CREATED);
     }
     @GetMapping("/{classCode}")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_USER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<?> getClassroom(@PathVariable("classCode") String classCode){
         Classroom classroom = classroomService.getClassroomByClassCode(classCode);
         return new ResponseEntity<>(classroom, HttpStatus.OK);

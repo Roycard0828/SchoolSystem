@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,24 +26,28 @@ public class RecordController {
     private final RecordService recordService;
 
     @GetMapping("/{classCode}")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<?> getRecordByClassCode(@PathVariable("classCode") String classCode){
         Record record = recordService.findRecordByClassCode(classCode);
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
     @GetMapping("/{classCode}/activities")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Set<Activity>> getActivitiesByRecord(@PathVariable("classCode") String classCode){
         Set<Activity> activities = recordService.getAllActivitiesByRecordClassCode(classCode);
         return new ResponseEntity<>(activities, HttpStatus.OK);
     }
 
     @GetMapping("/{classCode}/exams")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Set<Exam>> getExamsByRecord(@PathVariable("classCode") String classCode){
         Set<Exam> exams = recordService.getAllExamsByRecordClassCode(classCode);
         return new ResponseEntity<>(exams, HttpStatus.OK);
     }
 
     @PatchMapping("/add-student")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_TEACHER')")
     public ResponseEntity<?> addStudentToRecord(@Valid @RequestBody AddStudentDTO addStudentDTO){
         recordService.addStudentToRecord(addStudentDTO.getStudentIdentifier(),
                                         addStudentDTO.getClassCode());

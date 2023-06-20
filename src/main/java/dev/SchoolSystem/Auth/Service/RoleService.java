@@ -33,7 +33,7 @@ public class RoleService {
         return roleRepository.save(role);
     }
 
-    public User addRoleTeacherToUser(String username){
+    public User addRoleAndOptionsTeacherToUser(String username){
         User user = userRepository.findByUsername(username);
         Role role = roleRepository.findByRoleName(RoleName.ROLE_TEACHER);
         user.getRoles().add(role);

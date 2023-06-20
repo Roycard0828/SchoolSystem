@@ -79,7 +79,7 @@ class RoleServiceTest {
         given(userRepository.findByUsername(username)).willReturn(user);
         given(roleRepository.findByRoleName(RoleName.ROLE_TEACHER)).willReturn(teacherRole);
         given(userRepository.save(user)).willReturn(user);
-        User userGiven = underTest.addRoleTeacherToUser(username);
+        User userGiven = underTest.addRoleAndOptionsTeacherToUser(username);
         //then
         verify(userRepository).findByUsername(username);
         verify(roleRepository).findByRoleName(RoleName.ROLE_TEACHER);

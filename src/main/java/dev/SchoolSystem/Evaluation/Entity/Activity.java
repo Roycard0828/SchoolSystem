@@ -31,4 +31,6 @@ public class Activity {
         this.deliveries = deliveries;
         this.record = record;
     }
+
+    public Activity(){}
 }

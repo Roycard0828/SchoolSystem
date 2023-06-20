@@ -34,4 +34,6 @@ public class ExamAnswer {
         this.exam = exam;
         this.student = student;
     }
+
+    public ExamAnswer(){}
 }

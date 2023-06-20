@@ -1,15 +1,14 @@
 package dev.SchoolSystem.Evaluation.Service;
 
 import dev.SchoolSystem.Classroom.Entity.Record;
+import dev.SchoolSystem.Evaluation.DTO.DeliverAnswerDTO;
 import dev.SchoolSystem.Evaluation.DTO.ExamAnswerDTO;
-import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
-import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Evaluation.Entity.ExamAnswer;
 import dev.SchoolSystem.Evaluation.Repository.ExamAnswerRepository;
-import dev.SchoolSystem.Evaluation.Repository.ExamRepository;
 import dev.SchoolSystem.Student.Entity.Student;
 import dev.SchoolSystem.Student.Service.StudentService;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -56,7 +54,7 @@ class ExamAnswerServiceTest {
         exam = new Exam("", "", new HashSet<>(), record);
         //when
         when(studentService.findStudentByIdentifier("S1900")).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(Optional.ofNullable(exam));
+        when(examService.findExamById(answerDTO.getExamId())).thenReturn(exam);
         underTest.createAnswer(answerDTO);
         //then
         ArgumentCaptor<ExamAnswer> examAnswerArgumentCaptor =
@@ -72,7 +70,7 @@ class ExamAnswerServiceTest {
         Long id = 1L;
         exam = new Exam("", "", new HashSet<>(), record);
         //when
-        when(examService.findExamById(id)).thenReturn(Optional.ofNullable(exam));
+        when(examService.findExamById(id)).thenReturn(exam);
         Set<ExamAnswer> answers = underTest.findAllAnswersByExam(id);
         //then
         assertNotNull(answers);
@@ -80,17 +78,17 @@ class ExamAnswerServiceTest {
     }
 
     @Test
-    void testAddNoteToExamByTeacher() throws Exception {
+    void testAddNoteToExamByTeacher(){
         //given
         double note = 10;
-        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S1900", 1L);
+        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S1900", 1L, 10);
         exam = new Exam("", "", new HashSet<>(), record);
         examAnswer = new ExamAnswer(exam, student);
         //when
         when(studentService.findStudentByIdentifier(answerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(Optional.ofNullable(exam));
-        when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(examAnswer);
-        underTest.addNoteToExamByTeacher(answerDTO, note);
+        when(examService.findExamById(answerDTO.getExamId())).thenReturn(exam);
+        when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(Optional.ofNullable(examAnswer));
+        underTest.addNoteToExamByTeacher(answerDTO);
         //then
         ArgumentCaptor<ExamAnswer> answerArgumentCaptor =
                 ArgumentCaptor.forClass(ExamAnswer.class);
@@ -103,14 +101,14 @@ class ExamAnswerServiceTest {
     void testAddNoteToNonExistExam() {
         //given
         double note = 10;
-        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S-1900", 1L);
+        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S-1900", 1L, 10);
         //when
         when(studentService.findStudentByIdentifier(answerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(Optional.ofNullable(exam));
+        when(examService.findExamById(answerDTO.getExamId())).thenReturn(null);
         //then
-        Exception ex = assertThrowsExactly(Exception.class,
-                ()-> underTest.addNoteToExamByTeacher(answerDTO, note));
-        assertEquals("Exam not found", ex.getMessage());
+        Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
+                ()-> underTest.addNoteToExamByTeacher(answerDTO));
+        assertEquals("ExamAnswerService: Exam Answer not found", ex.getMessage());
     }
 
     @Test
@@ -121,9 +119,9 @@ class ExamAnswerServiceTest {
         exam = new Exam("", "", new HashSet<>(), record);
         examAnswer = new ExamAnswer(exam, student);
         //when
-        when(examService.findExamById(id)).thenReturn(Optional.ofNullable(exam));
+        when(examService.findExamById(id)).thenReturn(exam);
         when(studentService.findStudentByIdentifier(studentIdentifier)).thenReturn(student);
-        when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(examAnswer);
+        when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(Optional.ofNullable(examAnswer));
         ExamAnswer capturedExamAnswer = underTest.getExamAnswerByStudent(id, studentIdentifier);
         //then
         assertNotNull(capturedExamAnswer);
@@ -132,16 +130,14 @@ class ExamAnswerServiceTest {
     @Test
     void testAddAnswerToExamByStudent() throws Exception {
         //given
-        String newContent = "new content";
-        Date answerDate = new Date();
-        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S1900", 1L);
+        DeliverAnswerDTO deliverAnswerDTO = new DeliverAnswerDTO("S1900", 1L, "content");
         exam = new Exam("", "", new HashSet<>(), record);
         examAnswer = new ExamAnswer(exam, student);
         //when
-        when(studentService.findStudentByIdentifier(answerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(Optional.ofNullable(exam));
-        when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(examAnswer);
-        underTest.addContentToExamAnswerByStudent(answerDTO, newContent, answerDate);
+        when(studentService.findStudentByIdentifier(deliverAnswerDTO.getStudentIdentifier())).thenReturn(student);
+        when(examService.findExamById(deliverAnswerDTO.getExamId())).thenReturn(exam);
+        when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(Optional.ofNullable(examAnswer));
+        underTest.addContentToExamAnswerByStudent(deliverAnswerDTO);
         //then
         ArgumentCaptor<ExamAnswer> answerArgumentCaptor =
                 ArgumentCaptor.forClass(ExamAnswer.class);
@@ -153,15 +149,13 @@ class ExamAnswerServiceTest {
     @Test
     void testAddAnswerToNonExistExamAnswer() {
         //given
-        String newContent = "new content";
-        Date answerDate = new Date();
-        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S-1900", 1L);
+        DeliverAnswerDTO deliverAnswerDTO = new DeliverAnswerDTO("S1900", 1L, "content");
         //when
-        when(studentService.findStudentByIdentifier(answerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(Optional.empty());
+        when(studentService.findStudentByIdentifier(deliverAnswerDTO.getStudentIdentifier())).thenReturn(student);
+        when(examService.findExamById(deliverAnswerDTO.getExamId())).thenReturn(null);
         //then
-        Exception ex = assertThrowsExactly(Exception.class,
-                ()-> underTest.addContentToExamAnswerByStudent(answerDTO, newContent, answerDate));
-        assertEquals("ExamAnswer not found", ex.getMessage());
+        Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
+                ()-> underTest.addContentToExamAnswerByStudent(deliverAnswerDTO));
+        assertEquals("ExamAnswerService: Exam Answer not found", ex.getMessage());
     }
 }

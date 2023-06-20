@@ -10,6 +10,7 @@ import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Student.Entity.Student;
 import dev.SchoolSystem.Student.Repository.StudentRepository;
 import dev.SchoolSystem.Student.Service.StudentService;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.module.ResolutionException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -79,7 +81,7 @@ class RecordServiceTest {
         when(recordRepository.findRecordByClassCode(classCode)).
                 thenReturn(Optional.empty());
         //then
-        assertThrowsExactly(Exception.class,
+        assertThrowsExactly(ResourceNotFoundException.class,
                 ()-> underTest.findRecordByClassCode(classCode), "Record not found");
     }
 
@@ -139,9 +141,9 @@ class RecordServiceTest {
         when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(student);
         when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.of(record));
         //then
-        Exception ex = assertThrowsExactly(Exception.class,
+        Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
                 ()->underTest.addStudentToRecord(studentIdentifier, classCode));
-        assertEquals("Student does not exist", ex.getMessage());
+        assertEquals("RecordService: Student not found", ex.getMessage());
     }
 
     @Test
@@ -155,9 +157,9 @@ class RecordServiceTest {
         when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(student);
         when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.empty());
         //then
-        Exception ex = assertThrowsExactly(Exception.class,
+        Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
                 ()->underTest.addStudentToRecord(studentIdentifier, classCode));
-        assertEquals("Record not found", ex.getMessage());
+        assertEquals("RecordService: Record not found", ex.getMessage());
     }
 
 }

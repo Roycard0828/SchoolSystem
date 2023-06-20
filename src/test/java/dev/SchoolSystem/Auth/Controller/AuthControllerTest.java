@@ -77,7 +77,7 @@ class AuthControllerTest {
 
     @Test
     void addTeacherRoleToUserTest() throws Exception {
-        when(roleService.addRoleTeacherToUser("username")).thenReturn(user);
+        when(roleService.addRoleAndOptionsTeacherToUser("username")).thenReturn(user);
         mockMvc.perform(post("/auth/role/addTeacherRole")
                         .contentType("application/json")
                         .content("username"))
@@ -86,7 +86,7 @@ class AuthControllerTest {
 
     @Test
     void addTeacherRoleToNonExistsUserTest() throws Exception {
-        when(roleService.addRoleTeacherToUser("no_username")).thenReturn(null);
+        when(roleService.addRoleAndOptionsTeacherToUser("no_username")).thenReturn(null);
         mockMvc.perform(post("/auth/role/addTeacherRole")
                         .contentType("application/json")
                         .content("no_username"))
@@ -104,7 +104,7 @@ class AuthControllerTest {
 
     @Test
     void addStudentRoleToNonExistsUserTest() throws Exception {
-        when(roleService.addRoleTeacherToUser("no_username")).thenReturn(null);
+        when(roleService.addRoleAndOptionsTeacherToUser("no_username")).thenReturn(null);
         mockMvc.perform(post("/auth/role/addStudentRole")
                         .contentType("application/json")
                         .content("no_username"))

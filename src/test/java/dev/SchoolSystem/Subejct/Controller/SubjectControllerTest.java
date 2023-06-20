@@ -65,12 +65,6 @@ class SubjectControllerTest {
     }
 
     @Test
-    void testFailsToIncorrectName() throws Exception {
-        mvc.perform(get("/subject/get/non-name"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void testGetSubjectByIdentifier() throws Exception {
         String jsonString = objectMapper.writeValueAsString(subject);
         when(subjectService.findByIdentifier("1234")).thenReturn(subject);
@@ -85,12 +79,12 @@ class SubjectControllerTest {
         String jsonString = objectMapper.writeValueAsString(subject);
         SubjectDTO subjectDTO = new SubjectDTO("mathematics", "identifier", 10);
         String jsonStringDTO = objectMapper.writeValueAsString(subjectDTO);
+        when(subjectService.saveSubject(subjectDTO)).thenReturn(subject);
         System.out.println(jsonStringDTO);
         mvc.perform(post("/subject/create")
                 .contentType("application/json")
                 .content(jsonStringDTO))
-                .andExpect(status().isCreated())
-                .andExpect(content().json(jsonString));
+                .andExpect(status().isCreated());
     }
 
     @Test

@@ -1,6 +1,5 @@
 package dev.SchoolSystem.Evaluation.Service;
 
-import dev.SchoolSystem.Auth.Entity.User;
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Entity.Record;
 import dev.SchoolSystem.Classroom.Repository.RecordRepository;
@@ -8,8 +7,7 @@ import dev.SchoolSystem.Classroom.Service.RecordService;
 import dev.SchoolSystem.Evaluation.DTO.NewActivityDTO;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActivityRepository;
-import dev.SchoolSystem.Student.Entity.Student;
-import org.checkerframework.checker.units.qual.A;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -32,7 +29,7 @@ class ActivityServiceTest {
     @Mock
     private ActivityRepository activityRepository;
     @Mock
-    private RecordRepository recordRepository;
+    private RecordService recordService;
     @InjectMocks
     private ActivityService underTest;
     private Record record;
@@ -40,15 +37,16 @@ class ActivityServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new ActivityService(activityRepository, recordRepository);
+        underTest = new ActivityService(activityRepository, recordService);
     }
 
     @Test
     void testCreateActivity() {
         //given
         record = new Record(classroom, new HashSet<>());
-        NewActivityDTO activityDTO = new NewActivityDTO("", record);
+        NewActivityDTO activityDTO = new NewActivityDTO("", "CL-300");
         //when
+        when(recordService.findRecordByClassCode("CL-300")).thenReturn(record);
         underTest.createActivity(activityDTO);
         ArgumentCaptor<Activity> activityArgumentCaptor =
                 ArgumentCaptor.forClass(Activity.class);
@@ -59,24 +57,14 @@ class ActivityServiceTest {
     }
 
     @Test
-    void testFindAllActivitiesByRecordClass() throws Exception {
+    void testFindNonExistActivity() {
         //given
-        record = new Record(classroom, new HashSet<>());
-        String classCode = "CL-200";
+        Long id = 1L;
         //when
-        when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.of(record));
+        when(activityRepository.findById(id)).thenReturn(Optional.empty());
         //then
-        assertInstanceOf(Set.class, underTest.findAllActivitiesByRecordClassCode(classCode));
-    }
-
-    @Test
-    void testFindActivitiesOfNonExistRecord() {
-        String classCode = "non-exist";
-        //when
-        when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.ofNullable(record));
-        //then
-        Exception exception = assertThrowsExactly(Exception.class,
-                ()-> underTest.findAllActivitiesByRecordClassCode(classCode));
-        assertEquals("Record not found in the database", exception.getMessage());
+        Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
+                ()-> underTest.findActivityById(id));
+        assertEquals("ActivityService: Activity not found", ex.getMessage());
     }
 }

@@ -7,21 +7,25 @@ import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @AllArgsConstructor
 @Getter
-public class ExamAnswerDTO {
+public class DeliverDeliveryDTO {
 
     @NotBlank
     private String studentIdentifier;
     @NotNull
-    private Long examId;
-    private double note = 0;
-
+    private Long activityId;
+    private String content = null;
+    private Date deliveryDate = null;
     @JsonCreator
-     public ExamAnswerDTO(String studentIdentifier,@JsonProperty("examId") Long examId){
+    public DeliverDeliveryDTO(String studentIdentifier,@JsonProperty("activityId") Long activityId){
         this.studentIdentifier = studentIdentifier;
-        this.examId = examId;
+        this.activityId = activityId;
+    }
+
+    public DeliverDeliveryDTO(){
     }
 
 }

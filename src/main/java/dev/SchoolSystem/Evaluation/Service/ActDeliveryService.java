@@ -2,6 +2,7 @@ package dev.SchoolSystem.Evaluation.Service;
 
 
 import dev.SchoolSystem.Evaluation.DTO.ActDeliveryDTO;
+import dev.SchoolSystem.Evaluation.DTO.DeliverDeliveryDTO;
 import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActDeliveryRepository;
@@ -13,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -32,65 +31,45 @@ public class ActDeliveryService {
 
     public ActDelivery createActDelivery(ActDeliveryDTO deliveryDTO){
         Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier());
-        Optional<Activity> activity = activityService.findActivityById(deliveryDTO.getActivityId());
-        return actDeliveryRepository.save(new ActDelivery(student, activity.get()));
+        Activity activity = activityService.findActivityById(deliveryDTO.getActivityId());
+        return actDeliveryRepository.save(new ActDelivery(student, activity));
     }
 
     //Teacher's functionalities
-    public Set<ActDelivery> findDeliveriesByActivity(Long activityId) throws Exception {
-        Optional<Activity> activity = activityService.findActivityById(activityId);
-        if (activity.isEmpty()){
-            log.error("Activity not found");
-            throw new Exception("Activity not found");
-        }
-        return actDeliveryRepository.findByActivity(activity.get());
+    public Set<ActDelivery> findDeliveriesByActivity(Long activityId){
+        Activity activity = activityService.findActivityById(activityId);
+        return actDeliveryRepository.findByActivity(activity);
     }
 
-    public ActDelivery addNoteToDeliveryByTeacher(ActDeliveryDTO deliveryDTO, double note) throws Exception {
+    public ActDelivery addNoteToDeliveryByTeacher(ActDeliveryDTO deliveryDTO){
         Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier());
-        Optional<Activity> activity = activityService.findActivityById(deliveryDTO.getActivityId());
-        ActDelivery actDelivery = null;
-
-        if (activity.isPresent()){
-            actDelivery = actDeliveryRepository.findByActivityAndStudent(
-                    activity.get(),
-                    student
-            );
-            actDelivery.setNote(note);
-        }else{
-            log.error("Activity not found");
-            throw new Exception("Activity not found");
-        }
-
+        Activity activity = activityService.findActivityById(deliveryDTO.getActivityId());
+        ActDelivery actDelivery = actDeliveryRepository.findByActivityAndStudent(
+                    activity,
+                    student);
+        actDelivery.setNote(deliveryDTO.getNote());
         return actDeliveryRepository.save(actDelivery);
     }
 
     //Student's functionality
 
     public ActDelivery getActDeliveryByStudent(Long activityId, String studentIdentifier){
-        Optional<Activity> activity = activityService.findActivityById(activityId);
+        Activity activity = activityService.findActivityById(activityId);
         Student student = studentService.findStudentByIdentifier(studentIdentifier);
 
-        return actDeliveryRepository.findByActivityAndStudent(activity.get(), student);
+        return actDeliveryRepository.findByActivityAndStudent(activity, student);
     }
 
-    public ActDelivery addContentToDeliveryByStudent(ActDeliveryDTO deliveryDTO, String newContent, Date deliveryDate) throws Exception {
+    public ActDelivery addContentToDeliveryByStudent(DeliverDeliveryDTO deliveryDTO){
         Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier());
-        Optional<Activity> activity = activityService.findActivityById(deliveryDTO.getActivityId());
+        Activity activity = activityService.findActivityById(deliveryDTO.getActivityId());
 
-        ActDelivery actDelivery = null;
+        ActDelivery actDelivery = actDeliveryRepository.findByActivityAndStudent(
+                    activity,
+                    student);
+        actDelivery.setContent(deliveryDTO.getContent());
+        actDelivery.setDeliveryDate(deliveryDTO.getDeliveryDate());
 
-        if(activity.isPresent()){
-            actDelivery = actDeliveryRepository.findByActivityAndStudent(
-                    activity.get(),
-                    student
-            );
-            actDelivery.setContent(newContent);
-            actDelivery.setDeliveryDate(deliveryDate);
-        }else{
-            log.error("Activity not found");
-            throw new Exception("Activity not found");
-        }
         return actDeliveryRepository.save(actDelivery);
     }
 
