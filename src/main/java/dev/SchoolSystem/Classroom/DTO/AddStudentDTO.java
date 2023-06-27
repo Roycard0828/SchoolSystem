@@ -10,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 public class AddStudentDTO {
 
     @NotBlank
-    private String classCode;
+    private String class_code;
     @NotBlank
-    private String studentIdentifier;
+    private String student_identifier;
 
 }

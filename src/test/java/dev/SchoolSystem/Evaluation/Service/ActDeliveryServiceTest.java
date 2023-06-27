@@ -1,8 +1,7 @@
 package dev.SchoolSystem.Evaluation.Service;
 
 import dev.SchoolSystem.Classroom.Entity.Record;
-import dev.SchoolSystem.Evaluation.DTO.ActDeliveryDTO;
-import dev.SchoolSystem.Evaluation.DTO.DeliverDeliveryDTO;
+import dev.SchoolSystem.Evaluation.DTO.Activity.ActDeliveryDTO;
 import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActDeliveryRepository;
@@ -18,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -85,9 +85,9 @@ class ActDeliveryServiceTest {
         activity = new Activity("", new HashSet<>(), record);
         actDelivery = new ActDelivery(student, activity);
         //when
-        when(studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier())).thenReturn(student);
-        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(activity);
-        when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(actDelivery);
+        when(studentService.findStudentByIdentifier(deliveryDTO.getStudent_identifier())).thenReturn(student);
+        when(activityService.findActivityById(deliveryDTO.getActivity_id())).thenReturn(activity);
+        when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(Optional.ofNullable(actDelivery));
         underTest.addNoteToDeliveryByTeacher(deliveryDTO);
         //then
         ArgumentCaptor<ActDelivery> deliveryArgumentCaptor =
@@ -100,15 +100,14 @@ class ActDeliveryServiceTest {
     @Test
     void testGetDeliveryByStudent() {
         //given
-        Long id = 1L;
-        String studentIdentifier = "S1900";
+        ActDeliveryDTO deliveryDTO = new ActDeliveryDTO("S1900", 1L);
         activity = new Activity("", new HashSet<>(), record);
         actDelivery = new ActDelivery(student, activity);
         //when
-        when(activityService.findActivityById(id)).thenReturn(activity);
-        when(studentService.findStudentByIdentifier(studentIdentifier)).thenReturn(student);
-        when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(actDelivery);
-        ActDelivery capturedActDelivery = underTest.getActDeliveryByStudent(id, studentIdentifier);
+        when(activityService.findActivityById(deliveryDTO.getActivity_id())).thenReturn(activity);
+        when(studentService.findStudentByIdentifier(deliveryDTO.getStudent_identifier())).thenReturn(student);
+        when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(Optional.ofNullable(actDelivery));
+        ActDelivery capturedActDelivery = underTest.getActDeliveryByStudent(deliveryDTO);
         //then
         assertNotNull(capturedActDelivery);
     }
@@ -116,16 +115,17 @@ class ActDeliveryServiceTest {
     @Test
     void testAddContentToDeliveryByStudent() throws Exception {
         //given
-        DeliverDeliveryDTO deliveryDTO = new DeliverDeliveryDTO("S1900",
+        ActDeliveryDTO deliveryDTO = new ActDeliveryDTO(
+                "S1900",
                 1L,
                 "new content",
                 new Date());
         activity = new Activity("", new HashSet<>(), record);
         actDelivery = new ActDelivery(student, activity);
         //when
-        when(studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier())).thenReturn(student);
-        when(activityService.findActivityById(deliveryDTO.getActivityId())).thenReturn(activity);
-        when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(actDelivery);
+        when(studentService.findStudentByIdentifier(deliveryDTO.getStudent_identifier())).thenReturn(student);
+        when(activityService.findActivityById(deliveryDTO.getActivity_id())).thenReturn(activity);
+        when(actDeliveryRepository.findByActivityAndStudent(activity, student)).thenReturn(Optional.ofNullable(actDelivery));
         underTest.addContentToDeliveryByStudent(deliveryDTO);
         //then
         ArgumentCaptor<ActDelivery> deliveryArgumentCaptor =

@@ -1,19 +1,21 @@
 package dev.SchoolSystem.Evaluation.Service;
 
 
-import dev.SchoolSystem.Evaluation.DTO.ActDeliveryDTO;
-import dev.SchoolSystem.Evaluation.DTO.DeliverDeliveryDTO;
+import dev.SchoolSystem.Auth.Entity.Option;
+import dev.SchoolSystem.Evaluation.DTO.Activity.ActDeliveryDTO;
 import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActDeliveryRepository;
 import dev.SchoolSystem.Student.Entity.Student;
 import dev.SchoolSystem.Student.Service.StudentService;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -30,8 +32,8 @@ public class ActDeliveryService {
     private final StudentService studentService;
 
     public ActDelivery createActDelivery(ActDeliveryDTO deliveryDTO){
-        Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier());
-        Activity activity = activityService.findActivityById(deliveryDTO.getActivityId());
+        Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudent_identifier());
+        Activity activity = activityService.findActivityById(deliveryDTO.getActivity_id());
         return actDeliveryRepository.save(new ActDelivery(student, activity));
     }
 
@@ -42,35 +44,55 @@ public class ActDeliveryService {
     }
 
     public ActDelivery addNoteToDeliveryByTeacher(ActDeliveryDTO deliveryDTO){
-        Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier());
-        Activity activity = activityService.findActivityById(deliveryDTO.getActivityId());
-        ActDelivery actDelivery = actDeliveryRepository.findByActivityAndStudent(
-                    activity,
-                    student);
-        actDelivery.setNote(deliveryDTO.getNote());
-        return actDeliveryRepository.save(actDelivery);
+        Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudent_identifier());
+        Activity activity = activityService.findActivityById(deliveryDTO.getActivity_id());
+        Optional<ActDelivery> actDelivery = actDeliveryRepository.findByActivityAndStudent(activity, student);
+        if(actDelivery.isEmpty()){
+            log.error("This student doesn't have this activity");
+            throw new ResourceNotFoundException("Not found activity for this student.");
+        }
+        actDelivery.get().setNote(deliveryDTO.getNote());
+        actDeliveryRepository.save(actDelivery.get());
+        return actDelivery.get();
     }
 
     //Student's functionality
 
-    public ActDelivery getActDeliveryByStudent(Long activityId, String studentIdentifier){
-        Activity activity = activityService.findActivityById(activityId);
-        Student student = studentService.findStudentByIdentifier(studentIdentifier);
-
-        return actDeliveryRepository.findByActivityAndStudent(activity, student);
+    public ActDelivery getActDeliveryByStudent(ActDeliveryDTO deliveryDTO){
+        Activity activity = activityService.findActivityById(deliveryDTO.getActivity_id());
+        Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudent_identifier());
+        Optional<ActDelivery> actDelivery = actDeliveryRepository.findByActivityAndStudent(activity, student);
+        if(actDelivery.isEmpty()){
+            log.error("This student doesn't have this activity");
+            throw new ResourceNotFoundException("Not found activity for this student.");
+        }
+        return actDelivery.get();
     }
 
-    public ActDelivery addContentToDeliveryByStudent(DeliverDeliveryDTO deliveryDTO){
-        Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudentIdentifier());
-        Activity activity = activityService.findActivityById(deliveryDTO.getActivityId());
-
-        ActDelivery actDelivery = actDeliveryRepository.findByActivityAndStudent(
-                    activity,
-                    student);
-        actDelivery.setContent(deliveryDTO.getContent());
-        actDelivery.setDeliveryDate(deliveryDTO.getDeliveryDate());
-
-        return actDeliveryRepository.save(actDelivery);
+    public ActDelivery addContentToDeliveryByStudent(ActDeliveryDTO deliveryDTO){
+        Student student = studentService.findStudentByIdentifier(deliveryDTO.getStudent_identifier());
+        Activity activity = activityService.findActivityById(deliveryDTO.getActivity_id());
+        Optional<ActDelivery> actDelivery = actDeliveryRepository.findByActivityAndStudent(activity, student);
+        if(actDelivery.isEmpty()){
+            log.error("This student doesn't have this activity");
+            throw new ResourceNotFoundException("Not found activity for this student.");
+        }
+        actDelivery.get().setContent(deliveryDTO.getContent());
+        actDelivery.get().setDeliveryDate(deliveryDTO.getDelivery_date());
+        actDeliveryRepository.save(actDelivery.get());
+        return actDelivery.get();
     }
 
+    //Extra methods.
+    public ActDeliveryDTO transformActDelivery(ActDelivery delivery){
+        ActDeliveryDTO response = new ActDeliveryDTO(
+                delivery.getStudent().getIdentifier(),
+                delivery.getActivity().getId(),
+                delivery.getNote(),
+                delivery.getContent(),
+                delivery.getDeliveryDate(),
+                studentService.getProfileStudent(delivery.getStudent())
+        );
+        return response;
+    }
 }

@@ -7,6 +7,10 @@ import dev.SchoolSystem.Auth.Entity.User;
 import dev.SchoolSystem.Auth.Service.RoleService;
 import dev.SchoolSystem.Auth.Service.UserService;
 import dev.SchoolSystem.Config.JwtProvider;
+import dev.SchoolSystem.Student.DTO.StudentDTO;
+import dev.SchoolSystem.Student.Service.StudentService;
+import dev.SchoolSystem.Teacher.DTO.TeacherDTO;
+import dev.SchoolSystem.Teacher.Service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,54 +39,40 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class AuthController {
 
     @Autowired
-    UserService userService;
+    private final UserService userService;
     @Autowired
-    RoleService roleService;
+    private final RoleService roleService;
     @Autowired
-    JwtProvider jwtProvider;
-
-    @GetMapping("/say-hello")
-    public ResponseEntity<String> sayHello(){
-        return new ResponseEntity<>("Hello world", HttpStatus.OK);
-    }
+    private final StudentService studentService;
+    @Autowired
+    private final TeacherService teacherService;
+    @Autowired
+    private final JwtProvider jwtProvider;
 
     @PostMapping("/user/register")
     public ResponseEntity<User> registerUser(@Valid @RequestBody NewUserDTO newUser){
         User user = userService.registerUser(newUser);
-
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/user/{username}")
     public ResponseEntity<User> getUser(@PathVariable("username") String username){
         User user = userService.getUser(username);
-        if(user != null){
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>(null, BAD_REQUEST);
-        }
-
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/role/addStudentRole")
-    public ResponseEntity<String> addStudentRole(@RequestBody String username){
-        User user = roleService.addRoleAndOptionsStudentToUser(username);
-        if(user != null){
-            return new ResponseEntity<>("Student role added to user", HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<String> addStudentRole(@Valid @RequestBody StudentDTO studentDTO) {
+        User user = roleService.addRoleAndOptionsStudentToUser(studentDTO.getUsername());
+        studentService.createStudent(studentDTO, user);
+        return new ResponseEntity<>("Student role added to user", HttpStatus.OK);
     }
 
     @PostMapping("/role/addTeacherRole")
-    public ResponseEntity<String> addTeacherRole(@RequestBody String username){
-        User user = roleService.addRoleAndOptionsTeacherToUser(username);
-        if(user != null){
-            return new ResponseEntity<>("Teacher role added to user", HttpStatus.OK);
-        }else{
-            return new ResponseEntity<>("User not found", HttpStatus.BAD_REQUEST);
-        }
-
+    public ResponseEntity<String> addTeacherRole(@Valid @RequestBody TeacherDTO teacherDTO){
+        User user = roleService.addRoleAndOptionsTeacherToUser(teacherDTO.getUsername());
+        teacherService.createTeacher(teacherDTO, user);
+        return new ResponseEntity<>("Teacher role added to user", HttpStatus.OK);
     }
 
     @GetMapping("/refreshToken")

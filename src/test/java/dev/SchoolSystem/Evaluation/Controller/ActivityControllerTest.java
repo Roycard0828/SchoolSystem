@@ -2,8 +2,9 @@ package dev.SchoolSystem.Evaluation.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.SchoolSystem.Classroom.Entity.Record;
-import dev.SchoolSystem.Evaluation.DTO.NewActivityDTO;
+import dev.SchoolSystem.Evaluation.DTO.Activity.ActivityDTO;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
+import dev.SchoolSystem.Evaluation.Service.ActDeliveryService;
 import dev.SchoolSystem.Evaluation.Service.ActivityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +37,8 @@ class ActivityControllerTest {
     private HttpServletRequest request;
     @MockBean
     private ActivityService activityService;
+    @MockBean
+    private ActDeliveryService actDeliveryService;
 
     private Activity activity;
     private Record record;
@@ -50,7 +53,7 @@ class ActivityControllerTest {
     @WithMockUser(username = "JOHN", authorities = { "ROLE_TEACHER" })
     void testCreateActivity() throws Exception {
         //given
-        NewActivityDTO activityDTO = new NewActivityDTO("activity", "CL-300");
+        ActivityDTO activityDTO = new ActivityDTO("activity", "CL-300");
         String jsonActivityDTO = objectMapper.writeValueAsString(activityDTO);
         //when
         when(activityService.createActivity(activityDTO)).thenReturn(activity);
@@ -59,6 +62,16 @@ class ActivityControllerTest {
                 .contentType("application/json")
                 .content(jsonActivityDTO))
                 .andExpect(status().isCreated())
-                .andExpect(content().string("Classroom created"));
+                .andExpect(content().string("Activity created"));
+    }
+
+    @Test
+    @WithMockUser(username = "JOHN", authorities = { "ROLE_USER" })
+    void testGetActivity() throws Exception {
+        //given
+        Long id = 1L;
+        //then
+        mvc.perform(get("/classroom/record/activity/1"))
+                .andExpect(status().isOk());
     }
 }

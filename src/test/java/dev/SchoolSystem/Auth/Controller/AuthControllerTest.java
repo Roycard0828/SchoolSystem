@@ -6,6 +6,10 @@ import dev.SchoolSystem.Auth.Entity.User;
 import dev.SchoolSystem.Auth.Service.RoleService;
 import dev.SchoolSystem.Auth.Service.UserService;
 import dev.SchoolSystem.Config.JwtProvider;
+import dev.SchoolSystem.Student.DTO.StudentDTO;
+import dev.SchoolSystem.Student.Service.StudentService;
+import dev.SchoolSystem.Teacher.DTO.TeacherDTO;
+import dev.SchoolSystem.Teacher.Service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +42,10 @@ class AuthControllerTest {
     private UserService userService;
     @MockBean
     private RoleService roleService;
+    @MockBean
+    private StudentService studentService;
+    @MockBean
+    private TeacherService teacherService;
     @MockBean
     private JwtProvider jwtProvider;
 
@@ -77,10 +85,21 @@ class AuthControllerTest {
 
     @Test
     void addTeacherRoleToUserTest() throws Exception {
+        //given
+        TeacherDTO teacher = new TeacherDTO(
+                "username",
+                "TCH-2001",
+                1,
+                "asd",
+                "asd"
+        );
+        String jsonTeacher = objectMapper.writeValueAsString(teacher);
+        //when
+        //then
         when(roleService.addRoleAndOptionsTeacherToUser("username")).thenReturn(user);
         mockMvc.perform(post("/auth/role/addTeacherRole")
                         .contentType("application/json")
-                        .content("username"))
+                        .content(jsonTeacher))
                         .andExpect(status().isOk());
     }
 
@@ -95,10 +114,21 @@ class AuthControllerTest {
 
     @Test
     void addStudentRoleToUserTest() throws Exception {
+        //given
+        StudentDTO studentDTO = new StudentDTO(
+                "username",
+                "identifier",
+                1,
+                "course",
+                "email"
+        );
+        String jsonStudent = objectMapper.writeValueAsString(studentDTO);
+        //when
         when(roleService.addRoleAndOptionsStudentToUser("username")).thenReturn(user);
+        //then
         mockMvc.perform(post("/auth/role/addStudentRole")
                         .contentType("application/json")
-                        .content("username"))
+                        .content(jsonStudent))
                 .andExpect(status().isOk());
     }
 

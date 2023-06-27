@@ -1,8 +1,6 @@
 package dev.SchoolSystem.Evaluation.Service;
 
-import dev.SchoolSystem.Auth.Entity.Option;
-import dev.SchoolSystem.Evaluation.DTO.DeliverAnswerDTO;
-import dev.SchoolSystem.Evaluation.DTO.ExamAnswerDTO;
+import dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Evaluation.Entity.ExamAnswer;
 import dev.SchoolSystem.Evaluation.Repository.ExamAnswerRepository;
@@ -31,9 +29,9 @@ public class ExamAnswerService {
     @Autowired
     private final StudentService studentService;
 
-    public ExamAnswer createAnswer(ExamAnswerDTO answerDTO){
-        Student student = studentService.findStudentByIdentifier(answerDTO.getStudentIdentifier());
-        Exam exam = examService.findExamById(answerDTO.getExamId());
+    public ExamAnswer createAnswer(dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO answerDTO){
+        Student student = studentService.findStudentByIdentifier(answerDTO.getStudent_identifier());
+        Exam exam = examService.findExamById(answerDTO.getExam_id());
         return examAnswerRepository.save(new ExamAnswer(exam, student));
     }
 
@@ -44,8 +42,8 @@ public class ExamAnswerService {
         return examAnswerRepository.findAllByExam(exam);
     }
 
-    public ExamAnswer addNoteToExamByTeacher(ExamAnswerDTO answerDTO){
-        ExamAnswer answer = getExamAnswerByStudent(answerDTO.getExamId(), answerDTO.getStudentIdentifier());
+    public ExamAnswer addNoteToExamByTeacher(dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO answerDTO){
+        ExamAnswer answer = getExamAnswerByStudent(answerDTO.getExam_id(), answerDTO.getStudent_identifier());
         answer.setNote(answerDTO.getNote());
         return examAnswerRepository.save(answer);
     }
@@ -63,10 +61,21 @@ public class ExamAnswerService {
         return answer.get();
     }
 
-    public ExamAnswer addContentToExamAnswerByStudent(DeliverAnswerDTO answerDTO){
-        ExamAnswer answer = getExamAnswerByStudent(answerDTO.getExamId(), answerDTO.getStudentIdentifier());
+    public ExamAnswer addContentToExamAnswerByStudent(ExamAnswerDTO answerDTO){
+        ExamAnswer answer = getExamAnswerByStudent(answerDTO.getExam_id(), answerDTO.getStudent_identifier());
         answer.setContent(answerDTO.getContent());
         return examAnswerRepository.save(answer);
+    }
+
+    //Extra methods.
+    public ExamAnswerDTO transformToExamAnswer(ExamAnswer answer){
+        return new ExamAnswerDTO(
+                answer.getStudent().getIdentifier(),
+                answer.getExam().getId(),
+                answer.getNote(),
+                answer.getContent(),
+                studentService.getProfileStudent(answer.getStudent())
+        );
     }
 
 }

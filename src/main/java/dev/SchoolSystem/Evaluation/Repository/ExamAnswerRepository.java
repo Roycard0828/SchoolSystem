@@ -1,7 +1,5 @@
 package dev.SchoolSystem.Evaluation.Repository;
 
-import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
-import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Evaluation.Entity.ExamAnswer;
 import dev.SchoolSystem.Student.Entity.Student;

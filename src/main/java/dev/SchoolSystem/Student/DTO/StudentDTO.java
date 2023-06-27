@@ -1,5 +1,7 @@
 package dev.SchoolSystem.Student.DTO;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.SchoolSystem.Auth.Entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class StudentDTO {
 
+    private String username;
     @NotBlank
     private String identifier;
     @NotNull
@@ -19,7 +22,12 @@ public class StudentDTO {
     private String course;
     @NotBlank
     private String email;
-    @NotNull
-    private User user_id;
 
+    @JsonCreator()
+    public StudentDTO(String identifier, @JsonProperty("age") int age, String course, String email) {
+        this.identifier = identifier;
+        this.age = age;
+        this.course = course;
+        this.email = email;
+    }
 }

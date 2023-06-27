@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,8 @@ public class RoleService {
 
     @Autowired
     private final UserRepository userRepository;
+    @Autowired
+    private final UserService userService;
     @Autowired
     private final RoleRepository roleRepository;
     @Autowired
@@ -34,7 +37,7 @@ public class RoleService {
     }
 
     public User addRoleAndOptionsTeacherToUser(String username){
-        User user = userRepository.findByUsername(username);
+        User user = userService.getUser(username);
         Role role = roleRepository.findByRoleName(RoleName.ROLE_TEACHER);
         user.getRoles().add(role);
         //Add available options for this role
@@ -44,7 +47,7 @@ public class RoleService {
     }
 
     public User addRoleAndOptionsStudentToUser(String username){
-        User user = userRepository.findByUsername(username);
+        User user = userService.getUser(username);
         Role role = roleRepository.findByRoleName(RoleName.ROLE_STUDENT);
         user.getRoles().add(role);
         //Add available options for this role
@@ -54,7 +57,7 @@ public class RoleService {
     }
 
     public User addRoleAndOptionsManagerToUser(String username){
-        User user = userRepository.findByUsername(username);
+        User user = userService.getUser(username);
         Role role = roleRepository.findByRoleName(RoleName.ROLE_MANAGER);
         user.getRoles().add(role);
         //Add available options for this role

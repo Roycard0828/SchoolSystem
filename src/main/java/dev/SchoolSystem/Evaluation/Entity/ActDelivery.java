@@ -1,5 +1,6 @@
 package dev.SchoolSystem.Evaluation.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dev.SchoolSystem.Student.Entity.Student;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,5 +40,11 @@ public class ActDelivery {
         this.activity = activity;
     }
 
+    public ActDelivery(){}
+
+    @JsonBackReference
+    public Activity getActivity(){
+        return this.activity;
+    }
 
 }

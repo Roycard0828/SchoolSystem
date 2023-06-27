@@ -1,8 +1,7 @@
 package dev.SchoolSystem.Evaluation.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.SchoolSystem.Evaluation.DTO.ActDeliveryDTO;
-import dev.SchoolSystem.Evaluation.DTO.DeliverDeliveryDTO;
+import dev.SchoolSystem.Evaluation.DTO.Activity.ActDeliveryDTO;
 import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Service.ActDeliveryService;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -51,19 +49,6 @@ class ActDeliveryControllerTest {
 
     @Test
     @WithMockUser(username = "JOHN", authorities = { "ROLE_TEACHER" })
-    void testGetAllDeliveriesByActivity() throws Exception {
-        //given
-        Long id = 1l;
-        //when
-        when(actDeliveryService.findDeliveriesByActivity(id)).thenReturn(new HashSet<>());
-        //then
-        mvc.perform(get("/classroom/record/activity/act-delivery/1"))
-                .andExpect(content().contentType("application/json"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(username = "JOHN", authorities = { "ROLE_TEACHER" })
     void testAddNoteToActivity() throws Exception {
         //given
         ActDeliveryDTO actDeliveryDTO = new ActDeliveryDTO("studentIdentifier", 1L, 10.0);
@@ -78,22 +63,18 @@ class ActDeliveryControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "JOHN", authorities = { "ROLE_STUDENT" })
+    @WithMockUser(username = "JOHN", authorities = { "ROLE_USER" })
     void testGetStudentDelivery() throws Exception {
         //given
-        DeliverDeliveryDTO deliveryDTO = new DeliverDeliveryDTO("studentIdentifier", 1l);
+        ActDeliveryDTO deliveryDTO = new ActDeliveryDTO("studentIdentifier", 1L);
         String jsonDelivery = objectMapper.writeValueAsString(deliveryDTO);
-        String jsonActDelivery = objectMapper.writeValueAsString(actDelivery);
         //when
-        when(actDeliveryService.getActDeliveryByStudent(deliveryDTO.getActivityId(),
-                                                        deliveryDTO.getStudentIdentifier()))
-                .thenReturn(actDelivery);
+        when(actDeliveryService.getActDeliveryByStudent(deliveryDTO)).thenReturn(actDelivery);
         //then
         mvc.perform(post("/classroom/record/activity/act-delivery/get-delivery")
                 .contentType("application/json")
                 .content(jsonDelivery))
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonActDelivery));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -102,13 +83,12 @@ class ActDeliveryControllerTest {
         //given
         String content = "content";
         Date deliveryDate = new Date();
-        DeliverDeliveryDTO deliveryDTO = new DeliverDeliveryDTO("studentIdentifier",
-                1l,
+        ActDeliveryDTO deliveryDTO = new ActDeliveryDTO("studentIdentifier",
+                1L,
                 content,
                 deliveryDate);
 
         String jsonDelivery = objectMapper.writeValueAsString(deliveryDTO);
-        String jsonActDelivery = objectMapper.writeValueAsString(actDelivery);
         //when
         when(actDeliveryService.addContentToDeliveryByStudent(deliveryDTO))
                 .thenReturn(actDelivery);

@@ -10,7 +10,7 @@ import java.util.Set;
 
 public interface ExamRepository extends JpaRepository<Exam, Long>{
 
-    @Query("SELECT a FROM Activity a WHERE a.record = ?1")
+    @Query("SELECT e FROM Exam e WHERE e.record = ?1")
     Set<Exam> findAllByRecord(Record record);
 
 }

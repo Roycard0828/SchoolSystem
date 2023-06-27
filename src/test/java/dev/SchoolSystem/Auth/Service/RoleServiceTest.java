@@ -25,6 +25,8 @@ class RoleServiceTest {
     @Mock
     UserRepository userRepository;
     @Mock
+    UserService userService;
+    @Mock
     RoleRepository roleRepository;
     @Mock
     OptionRepository optionRepository;
@@ -37,7 +39,7 @@ class RoleServiceTest {
 
     @BeforeEach
     void setUp() {
-        underTest = new RoleService(userRepository, roleRepository, optionRepository);
+        underTest = new RoleService(userRepository, userService, roleRepository, optionRepository);
         user = new User("name", "last_name", "username", "password");
     }
 
@@ -60,7 +62,7 @@ class RoleServiceTest {
         //given
         String username = user.getUsername();
         //when
-        given(userRepository.findByUsername(username)).willReturn(user);
+        given(userService.getUser(username)).willReturn(user);
         given(roleRepository.findByRoleName(RoleName.ROLE_STUDENT)).willReturn(studentRole);
         given(userRepository.save(user)).willReturn(user);
         User userGiven = underTest.addRoleAndOptionsStudentToUser(username);
@@ -76,7 +78,7 @@ class RoleServiceTest {
         //given
         String username = user.getUsername();
         //when
-        given(userRepository.findByUsername(username)).willReturn(user);
+        given(userService.getUser(username)).willReturn(user);
         given(roleRepository.findByRoleName(RoleName.ROLE_TEACHER)).willReturn(teacherRole);
         given(userRepository.save(user)).willReturn(user);
         User userGiven = underTest.addRoleAndOptionsTeacherToUser(username);
@@ -92,7 +94,7 @@ class RoleServiceTest {
         //given
         String username = user.getUsername();
         //when
-        given(userRepository.findByUsername(username)).willReturn(user);
+        given(userService.getUser(username)).willReturn(user);
         given(roleRepository.findByRoleName(RoleName.ROLE_MANAGER)).willReturn(managerRole);
         given(userRepository.save(user)).willReturn(user);
         User userGiven = underTest.addRoleAndOptionsManagerToUser(username);

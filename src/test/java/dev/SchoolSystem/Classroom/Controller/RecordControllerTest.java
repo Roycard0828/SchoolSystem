@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -46,6 +47,7 @@ class RecordControllerTest {
         record = new Record();
     }
     @Test
+    @WithMockUser(username = "JOHN", authorities = { "ROLE_TEACHER" })
     void testGetRecordByClassCode() throws Exception {
         //given
         String classCode = "CL-200";
@@ -57,6 +59,7 @@ class RecordControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "JOHN", authorities = { "ROLE_USER" })
     void testGetActivitiesByRecord() throws Exception {
         //given
         String classCode = "CL-200";
@@ -69,6 +72,7 @@ class RecordControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "JOHN", authorities = { "ROLE_USER" })
     void testGetExamsByRecord() throws Exception {
         //given
         String classCode = "CL-200";
@@ -81,6 +85,7 @@ class RecordControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "JOHN", authorities = { "ROLE_TEACHER" })
     void testAddStudentToRecord() throws Exception {
         //given
         AddStudentDTO studentDTO = new AddStudentDTO("CL-300", "STU-0001");

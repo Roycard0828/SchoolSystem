@@ -1,9 +1,7 @@
 package dev.SchoolSystem.Classroom.Controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.SchoolSystem.Classroom.DTO.ClassRoomDTO;
-import dev.SchoolSystem.Classroom.DTO.NewRecordDTO;
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Service.ClassroomService;
 import dev.SchoolSystem.Classroom.Service.RecordService;
@@ -21,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

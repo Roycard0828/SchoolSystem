@@ -1,8 +1,7 @@
 package dev.SchoolSystem.Evaluation.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.SchoolSystem.Evaluation.DTO.DeliverAnswerDTO;
-import dev.SchoolSystem.Evaluation.DTO.ExamAnswerDTO;
+import dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO;
 import dev.SchoolSystem.Evaluation.Entity.ExamAnswer;
 import dev.SchoolSystem.Evaluation.Service.ExamAnswerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,11 +75,11 @@ class ExamAnswerControllerTest {
     @Test
     void testGetStudentExamAnswer() throws Exception {
         //given
-        DeliverAnswerDTO answerDTO = new DeliverAnswerDTO("STU-1900", 1L);
+        ExamAnswerDTO answerDTO = new ExamAnswerDTO("STU-1900", 1L);
         String jsonAnswerDTO = objectMapper.writeValueAsString(answerDTO);
         String jsonAnswer = objectMapper.writeValueAsString(answer);
         //when
-        when(answerService.getExamAnswerByStudent(answerDTO.getExamId(), answerDTO.getStudentIdentifier()))
+        when(answerService.getExamAnswerByStudent(answerDTO.getExam_id(), answerDTO.getStudent_identifier()))
                 .thenReturn(answer);
         //then
         mvc.perform(post("/classroom/record/exam/exam-answer/get-answer")
@@ -93,7 +92,7 @@ class ExamAnswerControllerTest {
     @Test
     void testAddAnswerToExam() throws Exception {
         //given
-        DeliverAnswerDTO answerDTO = new DeliverAnswerDTO("STU-1900", 1L, "answer");
+        ExamAnswerDTO answerDTO = new ExamAnswerDTO("STU-1900", 1L, "answer");
         String jsonAnswerDTO = objectMapper.writeValueAsString(answerDTO);
         //then
         mvc.perform(post("/classroom/record/exam/exam-answer/add-answer")

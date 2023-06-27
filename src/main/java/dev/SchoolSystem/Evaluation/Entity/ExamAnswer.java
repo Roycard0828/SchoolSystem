@@ -1,7 +1,7 @@
 package dev.SchoolSystem.Evaluation.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import dev.SchoolSystem.Student.Entity.Student;
-import dev.SchoolSystem.Teacher.Entity.Teacher;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -36,4 +36,9 @@ public class ExamAnswer {
     }
 
     public ExamAnswer(){}
+
+    @JsonBackReference
+    public Exam getExam(){
+        return this.exam;
+    }
 }

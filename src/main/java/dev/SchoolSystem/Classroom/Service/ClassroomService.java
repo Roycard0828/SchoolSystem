@@ -1,7 +1,7 @@
 package dev.SchoolSystem.Classroom.Service;
 
 import dev.SchoolSystem.Classroom.DTO.ClassRoomDTO;
-import dev.SchoolSystem.Classroom.DTO.NewRecordDTO;
+import dev.SchoolSystem.Classroom.DTO.RecordDTO;
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Repository.ClassroomRepository;
 import dev.SchoolSystem.Subejct.Entity.Subject;
@@ -42,7 +42,7 @@ public class ClassroomService {
         );
         classroomRepository.save(classroom);
         //Automatically create a record for this classroom
-        recordService.createRecord(new NewRecordDTO(classroom));
+        recordService.createRecord(new RecordDTO(classroom));
         return classroom;
     }
 

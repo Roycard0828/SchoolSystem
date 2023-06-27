@@ -2,7 +2,7 @@ package dev.SchoolSystem.Evaluation.Service;
 
 import dev.SchoolSystem.Classroom.Entity.Record;
 import dev.SchoolSystem.Classroom.Service.RecordService;
-import dev.SchoolSystem.Evaluation.DTO.NewActivityDTO;
+import dev.SchoolSystem.Evaluation.DTO.Activity.ActivityDTO;
 import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActivityRepository;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Service
@@ -27,11 +28,11 @@ public class ActivityService {
     @Autowired
     private final RecordService recordService;
 
-    public Activity createActivity(NewActivityDTO activityDTO){
+    public Activity createActivity(ActivityDTO activityDTO){
         Record record = recordService.findRecordByClassCode(activityDTO.getRecord_class_code());
         Activity activity = new Activity(
                 activityDTO.getDescription(),
-                activityDTO.getDeliveries(),
+                new HashSet<>(),
                 record
         );
         //Create automatically empty deliverables for all students of a record.

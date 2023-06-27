@@ -6,8 +6,6 @@ import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Entity.Record;
 import dev.SchoolSystem.Classroom.Repository.ClassroomRepository;
 import dev.SchoolSystem.Classroom.Repository.RecordRepository;
-import dev.SchoolSystem.Evaluation.Entity.ActDelivery;
-import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Evaluation.Entity.ExamAnswer;
 import dev.SchoolSystem.Student.Entity.Student;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 

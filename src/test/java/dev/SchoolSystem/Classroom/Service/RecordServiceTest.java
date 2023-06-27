@@ -1,7 +1,7 @@
 package dev.SchoolSystem.Classroom.Service;
 
 import dev.SchoolSystem.Auth.Entity.User;
-import dev.SchoolSystem.Classroom.DTO.NewRecordDTO;
+import dev.SchoolSystem.Classroom.DTO.RecordDTO;
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Entity.Record;
 import dev.SchoolSystem.Classroom.Repository.RecordRepository;
@@ -9,7 +9,6 @@ import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Student.Entity.Student;
 import dev.SchoolSystem.Student.Repository.StudentRepository;
-import dev.SchoolSystem.Student.Service.StudentService;
 import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.module.ResolutionException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -49,7 +47,7 @@ class RecordServiceTest {
     @Test
     void testCreateRecord(){
         //given
-        NewRecordDTO recordDTO = new NewRecordDTO(classroom);
+        RecordDTO recordDTO = new RecordDTO(classroom);
         //when
         underTest.createRecord(recordDTO);
         //then
@@ -124,7 +122,7 @@ class RecordServiceTest {
         student = new Student("STU-1234",10, "", "",
                 new User());
         //when
-        when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(student);
+        when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(Optional.ofNullable(student));
         when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.of(record));
         underTest.addStudentToRecord(studentIdentifier, classCode);
         //then
@@ -138,7 +136,7 @@ class RecordServiceTest {
         String classCode = "cl-200";
         Record record = new Record(classroom, new HashSet<>());
         //when
-        when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(student);
+        when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(Optional.ofNullable(student));
         when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.of(record));
         //then
         Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
@@ -154,7 +152,7 @@ class RecordServiceTest {
         student = new Student("STU-1234",10, "", "",
                 new User());
         //when
-        when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(student);
+        when(studentRepository.findByIdentifier(studentIdentifier)).thenReturn(Optional.ofNullable(student));
         when(recordRepository.findRecordByClassCode(classCode)).thenReturn(Optional.empty());
         //then
         Exception ex = assertThrowsExactly(ResourceNotFoundException.class,

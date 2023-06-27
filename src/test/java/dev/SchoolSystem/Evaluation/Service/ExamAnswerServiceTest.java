@@ -1,8 +1,7 @@
 package dev.SchoolSystem.Evaluation.Service;
 
 import dev.SchoolSystem.Classroom.Entity.Record;
-import dev.SchoolSystem.Evaluation.DTO.DeliverAnswerDTO;
-import dev.SchoolSystem.Evaluation.DTO.ExamAnswerDTO;
+import dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Evaluation.Entity.ExamAnswer;
 import dev.SchoolSystem.Evaluation.Repository.ExamAnswerRepository;
@@ -50,11 +49,11 @@ class ExamAnswerServiceTest {
     @Test
     void testCreateExamAnswer() {
         //given
-        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S1900", 1L);
+        dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO answerDTO = new dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO("S1900", 1L);
         exam = new Exam("", "", new HashSet<>(), record);
         //when
         when(studentService.findStudentByIdentifier("S1900")).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(exam);
+        when(examService.findExamById(answerDTO.getExam_id())).thenReturn(exam);
         underTest.createAnswer(answerDTO);
         //then
         ArgumentCaptor<ExamAnswer> examAnswerArgumentCaptor =
@@ -81,12 +80,12 @@ class ExamAnswerServiceTest {
     void testAddNoteToExamByTeacher(){
         //given
         double note = 10;
-        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S1900", 1L, 10);
+        dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO answerDTO = new dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO("S1900", 1L, 10);
         exam = new Exam("", "", new HashSet<>(), record);
         examAnswer = new ExamAnswer(exam, student);
         //when
-        when(studentService.findStudentByIdentifier(answerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(exam);
+        when(studentService.findStudentByIdentifier(answerDTO.getStudent_identifier())).thenReturn(student);
+        when(examService.findExamById(answerDTO.getExam_id())).thenReturn(exam);
         when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(Optional.ofNullable(examAnswer));
         underTest.addNoteToExamByTeacher(answerDTO);
         //then
@@ -101,10 +100,10 @@ class ExamAnswerServiceTest {
     void testAddNoteToNonExistExam() {
         //given
         double note = 10;
-        ExamAnswerDTO answerDTO = new ExamAnswerDTO("S-1900", 1L, 10);
+        dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO answerDTO = new dev.SchoolSystem.Evaluation.DTO.Exam.ExamAnswerDTO("S-1900", 1L, 10);
         //when
-        when(studentService.findStudentByIdentifier(answerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(answerDTO.getExamId())).thenReturn(null);
+        when(studentService.findStudentByIdentifier(answerDTO.getStudent_identifier())).thenReturn(student);
+        when(examService.findExamById(answerDTO.getExam_id())).thenReturn(null);
         //then
         Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
                 ()-> underTest.addNoteToExamByTeacher(answerDTO));
@@ -130,12 +129,12 @@ class ExamAnswerServiceTest {
     @Test
     void testAddAnswerToExamByStudent() throws Exception {
         //given
-        DeliverAnswerDTO deliverAnswerDTO = new DeliverAnswerDTO("S1900", 1L, "content");
+        ExamAnswerDTO deliverAnswerDTO = new ExamAnswerDTO("S1900", 1L, "content");
         exam = new Exam("", "", new HashSet<>(), record);
         examAnswer = new ExamAnswer(exam, student);
         //when
-        when(studentService.findStudentByIdentifier(deliverAnswerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(deliverAnswerDTO.getExamId())).thenReturn(exam);
+        when(studentService.findStudentByIdentifier(deliverAnswerDTO.getStudent_identifier())).thenReturn(student);
+        when(examService.findExamById(deliverAnswerDTO.getExam_id())).thenReturn(exam);
         when(examAnswerRepository.findByExamAndStudent(exam, student)).thenReturn(Optional.ofNullable(examAnswer));
         underTest.addContentToExamAnswerByStudent(deliverAnswerDTO);
         //then
@@ -149,10 +148,10 @@ class ExamAnswerServiceTest {
     @Test
     void testAddAnswerToNonExistExamAnswer() {
         //given
-        DeliverAnswerDTO deliverAnswerDTO = new DeliverAnswerDTO("S1900", 1L, "content");
+        ExamAnswerDTO deliverAnswerDTO = new ExamAnswerDTO("S1900", 1L, "content");
         //when
-        when(studentService.findStudentByIdentifier(deliverAnswerDTO.getStudentIdentifier())).thenReturn(student);
-        when(examService.findExamById(deliverAnswerDTO.getExamId())).thenReturn(null);
+        when(studentService.findStudentByIdentifier(deliverAnswerDTO.getStudent_identifier())).thenReturn(student);
+        when(examService.findExamById(deliverAnswerDTO.getExam_id())).thenReturn(null);
         //then
         Exception ex = assertThrowsExactly(ResourceNotFoundException.class,
                 ()-> underTest.addContentToExamAnswerByStudent(deliverAnswerDTO));

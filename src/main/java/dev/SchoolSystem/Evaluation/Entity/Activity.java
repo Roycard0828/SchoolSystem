@@ -1,5 +1,7 @@
 package dev.SchoolSystem.Evaluation.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.SchoolSystem.Classroom.Entity.Record;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,4 +35,14 @@ public class Activity {
     }
 
     public Activity(){}
+
+    @JsonManagedReference
+    public Set<ActDelivery> getDeliveries(){
+        return this.deliveries;
+    }
+
+    @JsonBackReference
+    public Record getRecord(){
+        return this.record;
+    }
 }

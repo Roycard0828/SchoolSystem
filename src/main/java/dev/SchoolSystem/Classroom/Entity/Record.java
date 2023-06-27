@@ -1,6 +1,7 @@
 package dev.SchoolSystem.Classroom.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Entity.Exam;
 import dev.SchoolSystem.Student.Entity.Student;
@@ -58,4 +59,15 @@ public class Record {
     public Classroom getClassroom(){
         return this.classroom;
     }
+
+    @JsonManagedReference
+    public Set<Activity> getActivities(){
+        return this.activities;
+    }
+
+    @JsonManagedReference
+    public Set<Exam> getExams(){
+        return this.exams;
+    }
+
 }

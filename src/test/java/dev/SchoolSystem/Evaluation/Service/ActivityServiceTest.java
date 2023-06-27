@@ -2,9 +2,8 @@ package dev.SchoolSystem.Evaluation.Service;
 
 import dev.SchoolSystem.Classroom.Entity.Classroom;
 import dev.SchoolSystem.Classroom.Entity.Record;
-import dev.SchoolSystem.Classroom.Repository.RecordRepository;
 import dev.SchoolSystem.Classroom.Service.RecordService;
-import dev.SchoolSystem.Evaluation.DTO.NewActivityDTO;
+import dev.SchoolSystem.Evaluation.DTO.Activity.ActivityDTO;
 import dev.SchoolSystem.Evaluation.Entity.Activity;
 import dev.SchoolSystem.Evaluation.Repository.ActivityRepository;
 import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
@@ -44,7 +43,7 @@ class ActivityServiceTest {
     void testCreateActivity() {
         //given
         record = new Record(classroom, new HashSet<>());
-        NewActivityDTO activityDTO = new NewActivityDTO("", "CL-300");
+        ActivityDTO activityDTO = new ActivityDTO("", "CL-300");
         //when
         when(recordService.findRecordByClassCode("CL-300")).thenReturn(record);
         underTest.createActivity(activityDTO);
