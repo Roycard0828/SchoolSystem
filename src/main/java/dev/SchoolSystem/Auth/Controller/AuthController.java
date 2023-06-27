@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +51,7 @@ public class AuthController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/user/register")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     public ResponseEntity<User> registerUser(@Valid @RequestBody NewUserDTO newUser){
         User user = userService.registerUser(newUser);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
@@ -62,6 +64,7 @@ public class AuthController {
     }
 
     @PostMapping("/role/addStudentRole")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     public ResponseEntity<String> addStudentRole(@Valid @RequestBody StudentDTO studentDTO) {
         User user = roleService.addRoleAndOptionsStudentToUser(studentDTO.getUsername());
         studentService.createStudent(studentDTO, user);
@@ -69,6 +72,7 @@ public class AuthController {
     }
 
     @PostMapping("/role/addTeacherRole")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     public ResponseEntity<String> addTeacherRole(@Valid @RequestBody TeacherDTO teacherDTO){
         User user = roleService.addRoleAndOptionsTeacherToUser(teacherDTO.getUsername());
         teacherService.createTeacher(teacherDTO, user);
