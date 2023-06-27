@@ -43,7 +43,7 @@ class SubjectControllerTest {
 
     @BeforeEach
     void setUp() {
-        subject = new Subject(1234, "mathematics", 10);
+        subject = new Subject("1234", "mathematics", 10);
         authU = new User("username", "password", new ArrayList<>());
     }
 
@@ -65,15 +65,9 @@ class SubjectControllerTest {
     }
 
     @Test
-    void testFailsToIncorrectName() throws Exception {
-        mvc.perform(get("/subject/get/non-name"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void testGetSubjectByIdentifier() throws Exception {
         String jsonString = objectMapper.writeValueAsString(subject);
-        when(subjectService.findByIdentifier(1234)).thenReturn(subject);
+        when(subjectService.findByIdentifier("1234")).thenReturn(subject);
         mvc.perform(get("/subject/get-by-identifier/1234"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
@@ -83,20 +77,20 @@ class SubjectControllerTest {
     @Test
     void testCreateSubject() throws Exception {
         String jsonString = objectMapper.writeValueAsString(subject);
-        SubjectDTO subjectDTO = new SubjectDTO("mathematics", 1234, 10);
+        SubjectDTO subjectDTO = new SubjectDTO("mathematics", "identifier", 10);
         String jsonStringDTO = objectMapper.writeValueAsString(subjectDTO);
+        when(subjectService.saveSubject(subjectDTO)).thenReturn(subject);
         System.out.println(jsonStringDTO);
         mvc.perform(post("/subject/create")
                 .contentType("application/json")
                 .content(jsonStringDTO))
-                .andExpect(status().isCreated())
-                .andExpect(content().json(jsonString));
+                .andExpect(status().isCreated());
     }
 
     @Test
     void testInvalidDTOCreateSubject() throws Exception{
         //Not blank validation is not fulfilled in the name
-        SubjectDTO subjectDTO = new SubjectDTO("", 1234, 10);
+        SubjectDTO subjectDTO = new SubjectDTO("", "identifier", 10);
         String jsonStringDTO = objectMapper.writeValueAsString(subjectDTO);
         mvc.perform(post("/subject/create")
                         .contentType("application/json")

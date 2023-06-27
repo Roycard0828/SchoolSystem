@@ -73,7 +73,7 @@ class UserServiceTest {
         //given
         String username = "username";
         User user = new User("name", "last_name", username, "password");
-        given(userRepository.findByUsername(username)).willReturn(user);
+        given(userRepository.findByUsername(username)).willReturn(Optional.of(user));
         //when
         UserDetails userDetails = underTest.loadUserByUsername(username);
         //then

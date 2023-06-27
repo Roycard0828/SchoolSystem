@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -25,15 +27,16 @@ class UserRepositoryTest {
         );
         //when
         underTest.save(user);
-        User userResult = underTest.findByUsername(username);
+        Optional<User> userResult = underTest.findByUsername(username);
         //then
-        assertEquals(user, userResult);
+        assertTrue(userResult.isPresent());
+        assertEquals(user, userResult.get());
     }
 
     @Test
     void itShouldReturnNullForNonExistUsername(){
         String username = "non_exist_username";
-        User userResult = underTest.findByUsername(username);
-        assertNull(userResult);
+        Optional<User> userResult = underTest.findByUsername(username);
+        assertTrue(userResult.isEmpty());
     }
 }

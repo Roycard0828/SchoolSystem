@@ -15,7 +15,7 @@ public class SubjectDTO {
     @NotBlank
     private String name;
     @NotNull
-    private int identifier;
+    private String identifier;
     @NotNull
     private int credits;
 

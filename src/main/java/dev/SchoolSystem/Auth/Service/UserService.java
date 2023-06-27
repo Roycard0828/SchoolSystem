@@ -6,6 +6,7 @@ import dev.SchoolSystem.Auth.Entity.User;
 import dev.SchoolSystem.Auth.Enums.RoleName;
 import dev.SchoolSystem.Auth.Repository.RoleRepository;
 import dev.SchoolSystem.Auth.Repository.UserRepository;
+import dev.SchoolSystem.Util.Exceptions.ResourceNotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,7 +42,7 @@ public class UserService implements UserDetailsService {
         log.info("Registering new user with ROLE_USER");
         String generatePassword = generateFirstPassword();
         User user = new User(newUser.getName(), newUser.getLast_name(),
-                newUser.getUsername(), passwordEncoder.encode("1234"));
+                newUser.getUsername(), passwordEncoder.encode(generatePassword));
 
         Role role = roleRepository.findByRoleName(RoleName.ROLE_USER);
         user.getRoles().add(role);
@@ -60,8 +62,8 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if(user != null){
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isPresent()){
             log.info("User found in the database: {}", user);
         }else{
             log.error("User not found in the database");
@@ -69,16 +71,22 @@ public class UserService implements UserDetailsService {
         }
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        user.getRoles().forEach(
+        user.get().getRoles().forEach(
                 role -> {authorities.add(
                         new SimpleGrantedAuthority(role.getRoleName().toString()));
                 });
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        return new org.springframework.security.core.userdetails.User(user.get().getUsername(),
+                user.get().getPassword(), authorities);
     }
 
     public User getUser(String username){
-        return userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()){
+            log.error("User not found");
+            throw new ResourceNotFoundException("User nor found");
+        }
+        return user.get();
     }
 
 }
