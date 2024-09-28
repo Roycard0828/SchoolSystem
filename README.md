@@ -9,6 +9,14 @@ System to manage a school with **classrooms**, **students**, **teachers**, **sub
 
 *At this moment the API focuses only on activities and exams, submit the response of the students and assign a note by the teachers. This project doesn’t record the notes history of the students or automatically define the main note of the student.*
 
+## Tech Stack
+- Java 11
+- Spring Boot 2.7
+- Spring JPA
+  - SQL / Postgresql
+- Spring Security
+  - JWT 
+
 ## Requirements.
 
 ### Logic.
